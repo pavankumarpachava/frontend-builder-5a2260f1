@@ -42,19 +42,25 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-background overflow-hidden">
       {/* Navigation */}
-      <nav className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-50">
+      <nav 
+        className="border-b border-white/10 backdrop-blur-xl sticky top-0 z-50"
+        style={{ 
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+          boxShadow: '0 8px 32px rgba(102, 126, 234, 0.3)'
+        }}
+      >
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
-            <Rocket className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <Rocket className="h-8 w-8 text-white" />
+            <span className="text-2xl font-bold text-white">
               OnboardX
             </span>
           </div>
           <div className="flex gap-4">
-            <Button variant="ghost" onClick={() => navigate("/login")}>
+            <Button variant="ghost" onClick={() => navigate("/login")} className="text-white hover:bg-white/10">
               Login
             </Button>
-            <Button onClick={() => navigate("/signup")} className="bg-gradient-primary hover:opacity-90">
+            <Button onClick={() => navigate("/signup")} className="bg-white text-primary hover:bg-white/90">
               Get Started
             </Button>
           </div>
@@ -251,8 +257,11 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-8">
-        <div className="container mx-auto px-6 text-center text-muted-foreground">
+      <footer 
+        className="border-t border-white/10 py-8"
+        style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)' }}
+      >
+        <div className="container mx-auto px-6 text-center text-white">
           <p>© 2024 OnboardX. All rights reserved.</p>
         </div>
       </footer>
