@@ -61,7 +61,7 @@ export const Header = () => {
     >
       <div className="container flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <Link to="/dashboard" className="flex items-center gap-2 group">
+        <Link to="/" className="flex items-center gap-2 group">
           <Rocket className="h-6 w-6 text-white group-hover:scale-110 transition-transform" />
           <span className="text-xl font-bold text-white group-hover:scale-105 transition-transform">
             OnboardX

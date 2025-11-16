@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
@@ -6,13 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Mail, Briefcase, Building2, Edit } from "lucide-react";
+import { User, Mail, Briefcase, Building2, Edit, Camera, Upload } from "lucide-react";
 import { apiGetUser } from "@/lib/api";
 import { toast } from "sonner";
 
 const Profile = () => {
   const [user, setUser] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadUser();
@@ -21,6 +23,7 @@ const Profile = () => {
   const loadUser = async () => {
     const data = await apiGetUser();
     setUser(data);
+    setAvatarUrl(data.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.email}`);
   };
 
   const handleSave = () => {
@@ -28,12 +31,35 @@ const Profile = () => {
     toast.success("Profile updated successfully");
   };
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image size should be less than 5MB");
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        setAvatarUrl(result);
+        setUser({ ...user, avatar: result });
+        toast.success("Profile picture updated");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
   if (!user) {
     return null;
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col page-transition">
       <Header />
       
       <main className="flex-1 container px-4 py-8">
@@ -50,13 +76,37 @@ const Profile = () => {
           <Card className="p-8">
             {/* Avatar Section */}
             <div className="flex items-center gap-6 mb-8 pb-8 border-b border-border">
-              <Avatar className="h-24 w-24">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="text-2xl">{user.name.charAt(0)}</AvatarFallback>
-              </Avatar>
+              <div className="relative group">
+                <Avatar className="h-24 w-24">
+                  <AvatarImage src={avatarUrl} alt={user.name} />
+                  <AvatarFallback className="text-2xl">{user.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <button
+                  onClick={triggerFileInput}
+                  className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                >
+                  <Camera className="h-8 w-8 text-white" />
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+              </div>
               <div className="flex-1">
                 <h2 className="text-2xl font-bold mb-1">{user.name}</h2>
                 <p className="text-muted-foreground">{user.role}</p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={triggerFileInput}
+                  className="mt-2 text-primary hover:text-primary"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Upload Photo
+                </Button>
               </div>
               <Button
                 variant={isEditing ? "default" : "outline"}

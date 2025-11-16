@@ -36,7 +36,7 @@ const Courses = () => {
   const progressPercent = (completedCount / courses.length) * 100;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col page-transition">
       <Header />
       
       <main className="flex-1 container px-4 py-8">
