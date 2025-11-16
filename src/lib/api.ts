@@ -269,8 +269,27 @@ export async function apiGetNotifications() {
 
 export async function apiAskAssistant(question: string) {
   console.log("AI Assistant question:", question);
-  // Will replace with actual backend call
+  await new Promise(resolve => setTimeout(resolve, 500));
   return {
-    answer: "This is a placeholder AI response. Your question was: " + question
+    answer: "This is a placeholder AI response. The backend will provide real answers once connected."
   };
 }
+
+// Download API Placeholders
+export const apiDownloadEmployeeHandbook = async () => {
+  console.log("Downloading Employee Handbook...");
+  await new Promise(resolve => setTimeout(resolve, 300));
+  // Will use GET /api/download/employee-handbook
+};
+
+export const apiDownloadOnboardingChecklist = async () => {
+  console.log("Downloading Onboarding Checklist...");
+  await new Promise(resolve => setTimeout(resolve, 300));
+  // Will use GET /api/download/onboarding-checklist
+};
+
+export const apiDownloadGoalTemplate = async () => {
+  console.log("Downloading Goal Template...");
+  await new Promise(resolve => setTimeout(resolve, 300));
+  // Will use GET /api/download/goal-template
+};

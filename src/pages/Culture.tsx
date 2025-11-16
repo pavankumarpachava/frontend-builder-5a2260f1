@@ -1,125 +1,146 @@
-import { useEffect, useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
-import { Heart, Users, Lightbulb, Award, Calendar } from "lucide-react";
-import { apiGetCultureInfo } from "@/lib/api";
+import { Button } from "@/components/ui/button";
+import { 
+  FileText, 
+  Flag, 
+  MessageCircle, 
+  Laptop, 
+  GraduationCap, 
+  Heart,
+  Sparkles,
+  ArrowRight
+} from "lucide-react";
 
 const Culture = () => {
-  const [cultureData, setCultureData] = useState<any>(null);
+  const resources = [
+    {
+      icon: FileText,
+      title: "Employee Handbook",
+      description: "Policies and guidelines for all employees.",
+      color: "from-blue-500/20 to-blue-500/5",
+      iconBg: "bg-blue-500/10",
+      iconColor: "text-blue-500"
+    },
+    {
+      icon: Flag,
+      title: "Company Mission & Vision",
+      description: "Learn about the company's purpose and long-term vision.",
+      color: "from-purple-500/20 to-purple-500/5",
+      iconBg: "bg-purple-500/10",
+      iconColor: "text-purple-500"
+    },
+    {
+      icon: MessageCircle,
+      title: "Communication Guidelines",
+      description: "Best practices for clear, inclusive communication.",
+      color: "from-green-500/20 to-green-500/5",
+      iconBg: "bg-green-500/10",
+      iconColor: "text-green-500"
+    },
+    {
+      icon: Laptop,
+      title: "Remote Work Guide",
+      description: "Expectations and setup tips for remote employees.",
+      color: "from-orange-500/20 to-orange-500/5",
+      iconBg: "bg-orange-500/10",
+      iconColor: "text-orange-500"
+    },
+    {
+      icon: GraduationCap,
+      title: "Learning & Development",
+      description: "Grow your skills with our learning programs.",
+      color: "from-pink-500/20 to-pink-500/5",
+      iconBg: "bg-pink-500/10",
+      iconColor: "text-pink-500"
+    },
+    {
+      icon: Heart,
+      title: "Wellness Programs",
+      description: "Mental and physical wellness resources.",
+      color: "from-red-500/20 to-red-500/5",
+      iconBg: "bg-red-500/10",
+      iconColor: "text-red-500"
+    }
+  ];
 
-  useEffect(() => {
-    loadCulture();
-  }, []);
-
-  const loadCulture = async () => {
-    const data = await apiGetCultureInfo();
-    setCultureData(data);
+  const handleViewResource = (resourceName: string) => {
+    console.log("Opening resource:", resourceName);
   };
-
-  if (!cultureData) {
-    return null;
-  }
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       
       <main className="flex-1 container px-4 py-8">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2">Company Culture</h1>
-            <p className="text-muted-foreground">
-              Learn about our values, traditions, and what makes us unique
+        <div className="max-w-6xl mx-auto space-y-12">
+          {/* Hero Header */}
+          <div className="text-center space-y-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-medium mb-4">
+              <Sparkles className="h-4 w-4" />
+              <span>Company Culture</span>
+            </div>
+            <h1 className="text-5xl font-bold mb-4 bg-gradient-mesh bg-clip-text text-transparent">
+              Culture Resources
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Explore our company values, policies, and resources to help you thrive in our culture
             </p>
           </div>
 
-          {/* Hero Card */}
-          <Card className="p-8 mb-8 bg-gradient-primary text-white border-0">
-            <div className="flex items-center gap-4 mb-4">
-              <Heart className="h-10 w-10" />
-              <h2 className="text-3xl font-bold">Welcome to Our Culture</h2>
-            </div>
-            <p className="text-lg opacity-90">
-              We believe in creating an environment where everyone can thrive, innovate,
-              and make a meaningful impact. Here's what defines us.
-            </p>
-          </Card>
-
-          {/* Core Values */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6">Our Core Values</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              {cultureData.values.map((value: any, index: number) => (
-                <Card key={index} className="p-6">
-                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                    {index === 0 && <Lightbulb className="h-6 w-6 text-primary" />}
-                    {index === 1 && <Users className="h-6 w-6 text-primary" />}
-                    {index === 2 && <Award className="h-6 w-6 text-primary" />}
+          {/* Resources Grid */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {resources.map((resource, index) => (
+              <Card 
+                key={index} 
+                className={`group p-8 bg-gradient-to-br ${resource.color} border-2 hover:border-primary/50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2`}
+              >
+                <div className="space-y-6">
+                  {/* Icon */}
+                  <div className={`h-16 w-16 rounded-2xl ${resource.iconBg} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    <resource.icon className={`h-8 w-8 ${resource.iconColor}`} />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">{value.title}</h3>
-                  <p className="text-muted-foreground">{value.description}</p>
-                </Card>
-              ))}
-            </div>
+
+                  {/* Content */}
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-bold group-hover:text-primary transition-colors">
+                      {resource.title}
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      {resource.description}
+                    </p>
+                  </div>
+
+                  {/* Button */}
+                  <Button 
+                    className="w-full group/btn shadow-md hover:shadow-xl transition-all"
+                    onClick={() => handleViewResource(resource.title)}
+                  >
+                    View Resource
+                    <ArrowRight className="h-4 w-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                  </Button>
+                </div>
+              </Card>
+            ))}
           </div>
 
-          {/* Traditions & Events */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6">Our Traditions</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              {cultureData.traditions.map((tradition: any, index: number) => (
-                <Card key={index} className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="h-12 w-12 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                      <Calendar className="h-6 w-6 text-secondary" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">{tradition.title}</h3>
-                      <p className="text-muted-foreground">{tradition.description}</p>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          {/* Work Environment */}
-          <Card className="p-8">
-            <h2 className="text-2xl font-bold mb-6">What to Expect</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="font-semibold mb-3 text-primary">Collaboration</h3>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>• Open communication channels</li>
-                  <li>• Regular team meetings and demos</li>
-                  <li>• Cross-functional project work</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-3 text-primary">Growth</h3>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>• Learning and development opportunities</li>
-                  <li>• Mentorship programs</li>
-                  <li>• Conference and training budgets</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-3 text-primary">Work-Life Balance</h3>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>• Flexible working hours</li>
-                  <li>• Remote work options</li>
-                  <li>• Generous PTO policy</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-3 text-primary">Innovation</h3>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>• Hackathons and innovation days</li>
-                  <li>• Support for new ideas</li>
-                  <li>• Latest tools and technologies</li>
-                </ul>
+          {/* CTA Section */}
+          <Card className="p-8 bg-gradient-primary text-white border-0 shadow-2xl">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl font-bold">Questions About Our Culture?</h2>
+              <p className="text-white/90 text-lg max-w-2xl mx-auto">
+                Our HR team is here to help you understand and embrace our company culture
+              </p>
+              <div className="flex gap-4 justify-center pt-4">
+                <Button size="lg" variant="secondary" className="shadow-lg">
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  Contact HR
+                </Button>
+                <Button size="lg" variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20 shadow-lg">
+                  <FileText className="h-4 w-4 mr-2" />
+                  View Full Handbook
+                </Button>
               </div>
             </div>
           </Card>
