@@ -126,18 +126,18 @@ const Culture = () => {
           </div>
 
           {/* CTA Section */}
-          <Card className="p-8 bg-gradient-primary text-white border-0 shadow-2xl">
+          <Card className="p-8 bg-gradient-to-br from-blue-50/50 via-purple-50/30 to-pink-50/50 border-2 border-primary/10 shadow-xl">
             <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold">Questions About Our Culture?</h2>
-              <p className="text-white/90 text-lg max-w-2xl mx-auto">
+              <h2 className="text-3xl font-bold text-foreground">Questions About Our Culture?</h2>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
                 Our HR team is here to help you understand and embrace our company culture
               </p>
               <div className="flex gap-4 justify-center pt-4">
-                <Button size="lg" variant="secondary" className="shadow-lg">
+                <Button size="lg" className="shadow-lg">
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Contact HR
                 </Button>
-                <Button size="lg" variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20 shadow-lg">
+                <Button size="lg" variant="outline" className="shadow-lg">
                   <FileText className="h-4 w-4 mr-2" />
                   View Full Handbook
                 </Button>
