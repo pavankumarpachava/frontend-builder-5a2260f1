@@ -266,3 +266,11 @@ export async function apiGetNotifications() {
     }
   ];
 }
+
+export async function apiAskAssistant(question: string) {
+  console.log("AI Assistant question:", question);
+  // Will replace with actual backend call
+  return {
+    answer: "This is a placeholder AI response. Your question was: " + question
+  };
+}

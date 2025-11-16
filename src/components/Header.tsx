@@ -61,12 +61,12 @@ export const Header = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
+    <header className="sticky top-0 z-50 w-full border-b border-black bg-black">
       <div className="container flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <Link to="/dashboard" className="flex items-center gap-2">
-          <Rocket className="h-6 w-6 text-primary" />
-          <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+        <Link to="/" className="flex items-center gap-2 group">
+          <Rocket className="h-6 w-6 text-white group-hover:text-primary transition-colors" />
+          <span className="text-xl font-bold text-white group-hover:text-primary transition-colors">
             OnboardX
           </span>
         </Link>
@@ -76,7 +76,7 @@ export const Header = () => {
           <NavigationMenuList>
             {/* Home Group */}
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-sm">
+              <NavigationMenuTrigger className="text-sm bg-transparent text-white hover:text-primary hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-primary">
                 <Home className="h-4 w-4 mr-2" />
                 Home
               </NavigationMenuTrigger>
@@ -102,7 +102,7 @@ export const Header = () => {
 
             {/* Onboarding Group */}
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-sm">
+              <NavigationMenuTrigger className="text-sm bg-transparent text-white hover:text-primary hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-primary">
                 <CheckCircle className="h-4 w-4 mr-2" />
                 Onboarding
               </NavigationMenuTrigger>
@@ -128,7 +128,7 @@ export const Header = () => {
 
             {/* People Group */}
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-sm">
+              <NavigationMenuTrigger className="text-sm bg-transparent text-white hover:text-primary hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-primary">
                 <Users className="h-4 w-4 mr-2" />
                 People
               </NavigationMenuTrigger>
@@ -154,7 +154,7 @@ export const Header = () => {
 
             {/* Training Group */}
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-sm">
+              <NavigationMenuTrigger className="text-sm bg-transparent text-white hover:text-primary hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-primary">
                 <BookOpen className="h-4 w-4 mr-2" />
                 Training
               </NavigationMenuTrigger>
@@ -184,8 +184,8 @@ export const Header = () => {
         <div className="flex items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                <Avatar className="h-10 w-10">
+              <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-transparent">
+                <Avatar className="h-10 w-10 ring-2 ring-white hover:ring-primary transition-all">
                   <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} alt={user.name} />
                   <AvatarFallback>{user.name?.charAt(0) || "U"}</AvatarFallback>
                 </Avatar>
@@ -219,7 +219,7 @@ export const Header = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="md:hidden text-white hover:text-primary hover:bg-transparent"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -229,11 +229,11 @@ export const Header = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-border bg-card">
+        <div className="md:hidden border-t border-white/10 bg-black">
           <div className="container py-4 space-y-4">
             {/* Home Group */}
             <div>
-              <h3 className="font-semibold mb-2 text-sm flex items-center gap-2">
+              <h3 className="font-semibold mb-2 text-sm flex items-center gap-2 text-white">
                 <Home className="h-4 w-4" />
                 Home
               </h3>
@@ -243,7 +243,7 @@ export const Header = () => {
                     key={link.href}
                     to={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`block py-2 text-sm ${isActive(link.href) ? "text-primary font-medium" : "text-muted-foreground"}`}
+                    className={`block py-2 text-sm ${isActive(link.href) ? "text-primary font-medium" : "text-white/70 hover:text-primary"}`}
                   >
                     {link.label}
                   </Link>
@@ -253,7 +253,7 @@ export const Header = () => {
 
             {/* Onboarding Group */}
             <div>
-              <h3 className="font-semibold mb-2 text-sm flex items-center gap-2">
+              <h3 className="font-semibold mb-2 text-sm flex items-center gap-2 text-white">
                 <CheckCircle className="h-4 w-4" />
                 Onboarding
               </h3>
@@ -263,7 +263,7 @@ export const Header = () => {
                     key={link.href}
                     to={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`block py-2 text-sm ${isActive(link.href) ? "text-primary font-medium" : "text-muted-foreground"}`}
+                    className={`block py-2 text-sm ${isActive(link.href) ? "text-primary font-medium" : "text-white/70 hover:text-primary"}`}
                   >
                     {link.label}
                   </Link>
@@ -273,7 +273,7 @@ export const Header = () => {
 
             {/* People Group */}
             <div>
-              <h3 className="font-semibold mb-2 text-sm flex items-center gap-2">
+              <h3 className="font-semibold mb-2 text-sm flex items-center gap-2 text-white">
                 <Users className="h-4 w-4" />
                 People
               </h3>
@@ -283,7 +283,7 @@ export const Header = () => {
                     key={link.href}
                     to={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`block py-2 text-sm ${isActive(link.href) ? "text-primary font-medium" : "text-muted-foreground"}`}
+                    className={`block py-2 text-sm ${isActive(link.href) ? "text-primary font-medium" : "text-white/70 hover:text-primary"}`}
                   >
                     {link.label}
                   </Link>
@@ -293,7 +293,7 @@ export const Header = () => {
 
             {/* Training Group */}
             <div>
-              <h3 className="font-semibold mb-2 text-sm flex items-center gap-2">
+              <h3 className="font-semibold mb-2 text-sm flex items-center gap-2 text-white">
                 <BookOpen className="h-4 w-4" />
                 Training
               </h3>
@@ -303,7 +303,7 @@ export const Header = () => {
                     key={link.href}
                     to={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`block py-2 text-sm ${isActive(link.href) ? "text-primary font-medium" : "text-muted-foreground"}`}
+                    className={`block py-2 text-sm ${isActive(link.href) ? "text-primary font-medium" : "text-white/70 hover:text-primary"}`}
                   >
                     {link.label}
                   </Link>

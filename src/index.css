@@ -36,6 +36,9 @@ All colors MUST be HSL.
     --border: 240 6% 90%;
     --input: 240 6% 90%;
     --ring: 258 90% 66%;
+    
+    --black: 0 0% 0%;
+    --white: 0 0% 100%;
 
     --radius: 0.75rem;
     
