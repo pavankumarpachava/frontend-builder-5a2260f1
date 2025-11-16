@@ -143,31 +143,31 @@ const Landing = () => {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <Card className="p-8 text-center bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+            <Card className="p-8 text-center bg-card border-border/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
               <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-glow">
                 <CheckCircle className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold mb-3">Smart Checklists</h3>
+              <h3 className="text-2xl font-bold mb-3 text-foreground">Smart Checklists</h3>
               <p className="text-muted-foreground leading-relaxed">
                 AI-powered task lists personalized to each role, ensuring nothing falls through the cracks
               </p>
             </Card>
             
-            <Card className="p-8 text-center bg-gradient-to-br from-accent/5 to-primary/5 border-accent/20 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+            <Card className="p-8 text-center bg-card border-border/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
               <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-glow">
                 <Users className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold mb-3">Mentor Matching</h3>
+              <h3 className="text-2xl font-bold mb-3 text-foreground">Mentor Matching</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Connect new hires with experienced team members instantly for guidance and support
               </p>
             </Card>
             
-            <Card className="p-8 text-center bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+            <Card className="p-8 text-center bg-card border-border/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
               <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-glow">
                 <TrendingUp className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold mb-3">Track Progress</h3>
+              <h3 className="text-2xl font-bold mb-3 text-foreground">Track Progress</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Visual dashboards and milestones keep everyone aligned on the onboarding journey
               </p>
