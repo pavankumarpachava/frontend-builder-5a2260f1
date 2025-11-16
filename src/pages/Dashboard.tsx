@@ -133,7 +133,11 @@ const Dashboard = () => {
             <Card className="p-6">
               <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
               <div className="space-y-2">
-                <Button variant="outline" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate("/team")}
+                >
                   <Users className="h-4 w-4 mr-2" />
                   View Team Directory
                 </Button>
