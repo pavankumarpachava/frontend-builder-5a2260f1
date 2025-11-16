@@ -96,6 +96,7 @@ export default {
         'gradient-mesh': 'var(--gradient-mesh)',
         'gradient-ocean': 'var(--gradient-ocean)',
         'gradient-sunset': 'var(--gradient-sunset)',
+        'gradient-green': 'var(--gradient-green)',
       },
       boxShadow: {
         'glow': 'var(--shadow-glow)',
