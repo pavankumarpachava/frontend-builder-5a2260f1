@@ -53,8 +53,11 @@ export const Header = () => {
 
   return (
     <header 
-      className="sticky top-0 z-50 w-full border-b border-white/10"
-      style={{ background: 'linear-gradient(90deg, #FFB2F5 0%, #A275FF 25%, #6E8BFF 50%, #8EE3FF 75%, #C0F8FF 100%)' }}
+      className="sticky top-0 z-50 w-full border-b border-white/20 backdrop-blur-xl"
+      style={{ 
+        background: 'linear-gradient(90deg, rgba(255, 178, 245, 0.85) 0%, rgba(162, 117, 255, 0.85) 25%, rgba(110, 139, 255, 0.85) 50%, rgba(142, 227, 255, 0.85) 75%, rgba(192, 248, 255, 0.85) 100%)',
+        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)'
+      }}
     >
       <div className="container flex h-16 items-center justify-between px-4">
         {/* Logo */}
@@ -196,8 +199,10 @@ export const Header = () => {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div 
-          className="md:hidden border-t border-white/10"
-          style={{ background: 'linear-gradient(90deg, #FFB2F5 0%, #A275FF 25%, #6E8BFF 50%, #8EE3FF 75%, #C0F8FF 100%)' }}
+          className="md:hidden border-t border-white/20 backdrop-blur-xl"
+          style={{ 
+            background: 'linear-gradient(90deg, rgba(255, 178, 245, 0.85) 0%, rgba(162, 117, 255, 0.85) 25%, rgba(110, 139, 255, 0.85) 50%, rgba(142, 227, 255, 0.85) 75%, rgba(192, 248, 255, 0.85) 100%)'
+          }}
         >
           <div className="container px-4 py-4 space-y-4">
             {/* Home Link */}
