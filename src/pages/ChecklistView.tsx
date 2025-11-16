@@ -360,7 +360,7 @@ const ChecklistView = () => {
         </div>
 
         {/* Overall Progress */}
-        <Card className="p-6 mb-8 bg-gradient-primary text-white border-0">
+        <Card className="p-6 mb-8 bg-gradient-green text-white border-0">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-2xl font-semibold mb-1">Overall Progress</h2>
