@@ -5,12 +5,18 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle, Clock, Users, Target } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { CheckCircle, Clock, Users, Target, Send, Sparkles } from "lucide-react";
+import { apiAskAssistant } from "@/lib/api";
+import { toast } from "sonner";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [progress, setProgress] = useState(35);
+  const [aiQuestion, setAiQuestion] = useState("");
+  const [aiAnswer, setAiAnswer] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -34,6 +40,25 @@ const Dashboard = () => {
     { title: "IT setup session", time: "Tomorrow, 10:00 AM", link: "/onboarding/calendar" },
     { title: "Department orientation", time: "Friday, 9:00 AM", link: "/onboarding/calendar" },
   ];
+
+  const handleAskAssistant = async () => {
+    if (!aiQuestion.trim()) {
+      toast.error("Please enter a question");
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      const response = await apiAskAssistant(aiQuestion);
+      setAiAnswer(response.answer);
+      toast.success("Response received!");
+    } catch (error) {
+      toast.error("Failed to get response");
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (!user) return null;
 
@@ -61,9 +86,9 @@ const Dashboard = () => {
         </Card>
 
         {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-6 mb-8">
           {/* Checklist */}
-          <Card className="lg:col-span-2 p-6">
+          <Card className="lg:col-span-2 p-6 h-fit">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-6 w-6 text-primary" />
@@ -100,9 +125,9 @@ const Dashboard = () => {
           </Card>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-6 h-fit">
             {/* Upcoming Tasks */}
-            <Card className="p-6">
+            <Card className="p-6 h-fit">
               <div className="flex items-center gap-2 mb-4">
                 <Clock className="h-5 w-5 text-primary" />
                 <h3 className="text-lg font-semibold">Upcoming</h3>
@@ -130,7 +155,7 @@ const Dashboard = () => {
             </Card>
 
             {/* Quick Actions */}
-            <Card className="p-6">
+            <Card className="p-6 h-fit">
               <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
               <div className="space-y-2">
                 <Button 
@@ -141,7 +166,11 @@ const Dashboard = () => {
                   <Users className="h-4 w-4 mr-2" />
                   View Team Directory
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate("/onboarding/goals")}
+                >
                   <Target className="h-4 w-4 mr-2" />
                   Set Your Goals
                 </Button>
@@ -149,6 +178,56 @@ const Dashboard = () => {
             </Card>
           </div>
         </div>
+
+        {/* AI Assistant Section */}
+        <Card className="p-6 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles className="h-6 w-6 text-primary" />
+            <div>
+              <h2 className="text-2xl font-semibold">Ask Our AI Assistant</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Ask any questions about your onboarding experience.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <Input
+                placeholder="Ask any onboarding questions here..."
+                value={aiQuestion}
+                onChange={(e) => setAiQuestion(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleAskAssistant();
+                  }
+                }}
+                className="flex-1"
+                disabled={isLoading}
+              />
+              <Button 
+                onClick={handleAskAssistant} 
+                disabled={isLoading}
+                className="gap-2"
+              >
+                <Send className="h-4 w-4" />
+                Ask
+              </Button>
+            </div>
+
+            {aiAnswer && (
+              <div className="mt-4">
+                <h3 className="text-sm font-semibold mb-2 text-muted-foreground">
+                  Assistant Response:
+                </h3>
+                <div className="bg-card p-4 rounded-lg border border-border">
+                  <p className="text-sm leading-relaxed">{aiAnswer}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </Card>
       </main>
       
       <Footer />
