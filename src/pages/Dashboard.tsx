@@ -86,15 +86,25 @@ const Dashboard = () => {
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Checklist */}
           <Card className="lg:col-span-2 p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <CheckCircle className="h-6 w-6 text-primary" />
-              <h2 className="text-2xl font-semibold">Onboarding Checklist</h2>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-6 w-6 text-primary" />
+                <h2 className="text-2xl font-semibold">Onboarding Checklist</h2>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate("/checklist")}
+              >
+                View All
+              </Button>
             </div>
             <div className="space-y-4">
               {checklistItems.map((item, index) => (
                 <div 
                   key={index}
-                  className="flex items-center gap-3 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors"
+                  className="flex items-center gap-3 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer"
+                  onClick={() => navigate("/checklist")}
                 >
                   <div className={`h-6 w-6 rounded-full border-2 flex items-center justify-center ${
                     item.completed 
