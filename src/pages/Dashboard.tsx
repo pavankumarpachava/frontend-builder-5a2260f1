@@ -35,9 +35,9 @@ const Dashboard = () => {
   ];
 
   const upcomingTasks = [
-    { title: "Team introduction meeting", time: "Today, 2:00 PM" },
-    { title: "IT setup session", time: "Tomorrow, 10:00 AM" },
-    { title: "Department orientation", time: "Friday, 9:00 AM" },
+    { title: "Team introduction meeting", time: "Today, 2:00 PM", link: "/calendar" },
+    { title: "IT setup session", time: "Tomorrow, 10:00 AM", link: "/calendar" },
+    { title: "Department orientation", time: "Friday, 9:00 AM", link: "/calendar" },
   ];
 
   if (!user) return null;
@@ -121,12 +121,24 @@ const Dashboard = () => {
               </div>
               <div className="space-y-3">
                 {upcomingTasks.map((task, index) => (
-                  <div key={index} className="pb-3 border-b border-border last:border-0 last:pb-0">
+                  <button
+                    key={index}
+                    onClick={() => navigate(task.link)}
+                    className="w-full text-left pb-3 border-b border-border last:border-0 last:pb-0 hover:opacity-70 transition-opacity"
+                  >
                     <p className="font-medium text-sm">{task.title}</p>
                     <p className="text-xs text-muted-foreground mt-1">{task.time}</p>
-                  </div>
+                  </button>
                 ))}
               </div>
+              <Button 
+                variant="outline" 
+                className="w-full mt-4"
+                onClick={() => navigate("/calendar")}
+              >
+                <Clock className="h-4 w-4 mr-2" />
+                View Full Calendar
+              </Button>
             </Card>
 
             {/* Quick Actions */}
