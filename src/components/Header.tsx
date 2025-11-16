@@ -9,15 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import { Rocket, Home, CheckCircle, Users, BookOpen, User, Settings, LogOut, Menu, X } from "lucide-react";
+import { Rocket, Home, CheckCircle, Users, BookOpen, User, Settings, LogOut, Menu, X, Bell } from "lucide-react";
 import { toast } from "sonner";
 
 export const Header = () => {
@@ -35,9 +27,8 @@ export const Header = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
-  const homeLinks = [
-    { href: "/dashboard", label: "Dashboard", icon: Home },
-    { href: "/notifications", label: "Notifications", icon: Home },
+  const profileLinks = [
+    { href: "/notifications", label: "Notifications", icon: Bell },
     { href: "/profile", label: "Profile", icon: User },
     { href: "/settings", label: "Settings", icon: Settings },
   ];
@@ -61,137 +52,114 @@ export const Header = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-black bg-black">
+    <header 
+      className="sticky top-0 z-50 w-full border-b border-white/10"
+      style={{ background: 'linear-gradient(90deg, #FFB2F5 0%, #A275FF 25%, #6E8BFF 50%, #8EE3FF 75%, #C0F8FF 100%)' }}
+    >
       <div className="container flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <Rocket className="h-6 w-6 text-white group-hover:text-primary transition-colors" />
-          <span className="text-xl font-bold text-white group-hover:text-primary transition-colors">
+        <Link to="/dashboard" className="flex items-center gap-2 group">
+          <Rocket className="h-6 w-6 text-white group-hover:scale-110 transition-transform" />
+          <span className="text-xl font-bold text-white group-hover:scale-105 transition-transform">
             OnboardX
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <NavigationMenu className="hidden md:flex">
-          <NavigationMenuList>
-            {/* Home Group */}
-            <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-sm bg-transparent text-white hover:text-primary hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-primary">
-                <Home className="h-4 w-4 mr-2" />
-                Home
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-[200px] gap-1 p-2">
-                  {homeLinks.map((link) => (
-                    <li key={link.href}>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          to={link.href}
-                          className={`block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground ${
-                            isActive(link.href) ? "bg-accent text-accent-foreground" : ""
-                          }`}
-                        >
-                          <div className="text-sm font-medium leading-none">{link.label}</div>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-                  ))}
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
+        <nav className="hidden md:flex items-center gap-1">
+          {/* Home - Direct Link */}
+          <Link
+            to="/dashboard"
+            className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-white/10 transition-colors"
+          >
+            <Home className="h-4 w-4" />
+            Home
+          </Link>
 
-            {/* Onboarding Group */}
-            <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-sm bg-transparent text-white hover:text-primary hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-primary">
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Onboarding
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-[220px] gap-1 p-2">
-                  {onboardingLinks.map((link) => (
-                    <li key={link.href}>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          to={link.href}
-                          className={`block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground ${
-                            isActive(link.href) ? "bg-accent text-accent-foreground" : ""
-                          }`}
-                        >
-                          <div className="text-sm font-medium leading-none">{link.label}</div>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-                  ))}
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
+          {/* Onboarding */}
+          <div className="group relative">
+            <button className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-white/10 transition-colors">
+              <CheckCircle className="h-4 w-4" />
+              Onboarding
+            </button>
+            <div className="absolute top-full left-0 mt-2 w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+              <div className="bg-white rounded-[10px] shadow-[0px_8px_20px_rgba(0,0,0,0.15)] p-2.5 min-w-[180px]">
+                {onboardingLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className={`block select-none rounded-md p-3 text-sm font-medium text-black hover:bg-gray-100 transition-colors ${
+                      isActive(link.href) ? "bg-gray-100" : ""
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
 
-            {/* People Group */}
-            <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-sm bg-transparent text-white hover:text-primary hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-primary">
-                <Users className="h-4 w-4 mr-2" />
-                People
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-[200px] gap-1 p-2">
-                  {peopleLinks.map((link) => (
-                    <li key={link.href}>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          to={link.href}
-                          className={`block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground ${
-                            isActive(link.href) ? "bg-accent text-accent-foreground" : ""
-                          }`}
-                        >
-                          <div className="text-sm font-medium leading-none">{link.label}</div>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-                  ))}
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
+          {/* People */}
+          <div className="group relative">
+            <button className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-white/10 transition-colors">
+              <Users className="h-4 w-4" />
+              People
+            </button>
+            <div className="absolute top-full left-0 mt-2 w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+              <div className="bg-white rounded-[10px] shadow-[0px_8px_20px_rgba(0,0,0,0.15)] p-2.5 min-w-[180px]">
+                {peopleLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className={`block select-none rounded-md p-3 text-sm font-medium text-black hover:bg-gray-100 transition-colors ${
+                      isActive(link.href) ? "bg-gray-100" : ""
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
 
-            {/* Training Group */}
-            <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-sm bg-transparent text-white hover:text-primary hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-primary">
-                <BookOpen className="h-4 w-4 mr-2" />
-                Training
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-[200px] gap-1 p-2">
-                  {trainingLinks.map((link) => (
-                    <li key={link.href}>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          to={link.href}
-                          className={`block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground ${
-                            isActive(link.href) ? "bg-accent text-accent-foreground" : ""
-                          }`}
-                        >
-                          <div className="text-sm font-medium leading-none">{link.label}</div>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-                  ))}
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+          {/* Training */}
+          <div className="group relative">
+            <button className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-white/10 transition-colors">
+              <BookOpen className="h-4 w-4" />
+              Training
+            </button>
+            <div className="absolute top-full left-0 mt-2 w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+              <div className="bg-white rounded-[10px] shadow-[0px_8px_20px_rgba(0,0,0,0.15)] p-2.5 min-w-[180px]">
+                {trainingLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className={`block select-none rounded-md p-3 text-sm font-medium text-black hover:bg-gray-100 transition-colors ${
+                      isActive(link.href) ? "bg-gray-100" : ""
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </nav>
 
         {/* User Avatar Dropdown */}
-        <div className="flex items-center gap-4">
+        {user.email && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-transparent">
-                <Avatar className="h-10 w-10 ring-2 ring-white hover:ring-primary transition-all">
-                  <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} alt={user.name} />
-                  <AvatarFallback>{user.name?.charAt(0) || "U"}</AvatarFallback>
+              <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-white/10">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} />
+                  <AvatarFallback className="bg-white text-primary">
+                    {user.name?.[0]?.toUpperCase() || "U"}
+                  </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 bg-card" align="end" forceMount>
+            <DropdownMenuContent className="w-56 bg-white rounded-[10px] shadow-[0px_8px_20px_rgba(0,0,0,0.15)]" align="end">
               <div className="flex items-center justify-start gap-2 p-2">
                 <div className="flex flex-col space-y-1 leading-none">
                   <p className="font-medium text-sm">{user.name}</p>
@@ -199,71 +167,68 @@ export const Header = () => {
                 </div>
               </div>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate("/profile")}>
-                <User className="mr-2 h-4 w-4" />
-                Profile
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/settings")}>
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
-              </DropdownMenuItem>
+              {profileLinks.map((link) => (
+                <DropdownMenuItem key={link.href} onClick={() => navigate(link.href)}>
+                  <link.icon className="mr-2 h-4 w-4" />
+                  <span>{link.label}</span>
+                </DropdownMenuItem>
+              ))}
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
-                Logout
+                <span>Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+        )}
 
-          {/* Mobile Menu Toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden text-white hover:text-primary hover:bg-transparent"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
-        </div>
+        {/* Mobile Menu Toggle */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="md:hidden text-white hover:bg-white/10"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </Button>
       </div>
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-white/10 bg-black">
-          <div className="container py-4 space-y-4">
-            {/* Home Group */}
+        <div 
+          className="md:hidden border-t border-white/10"
+          style={{ background: 'linear-gradient(90deg, #FFB2F5 0%, #A275FF 25%, #6E8BFF 50%, #8EE3FF 75%, #C0F8FF 100%)' }}
+        >
+          <div className="container px-4 py-4 space-y-4">
+            {/* Home Link */}
             <div>
-              <h3 className="font-semibold mb-2 text-sm flex items-center gap-2 text-white">
+              <Link
+                to="/dashboard"
+                className="flex items-center gap-2 font-semibold text-white py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 <Home className="h-4 w-4" />
                 Home
-              </h3>
-              <div className="space-y-1 pl-6">
-                {homeLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`block py-2 text-sm ${isActive(link.href) ? "text-primary font-medium" : "text-white/70 hover:text-primary"}`}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
+              </Link>
             </div>
 
-            {/* Onboarding Group */}
+            {/* Onboarding Links */}
             <div>
-              <h3 className="font-semibold mb-2 text-sm flex items-center gap-2 text-white">
+              <h3 className="font-semibold text-white mb-2 flex items-center gap-2">
                 <CheckCircle className="h-4 w-4" />
                 Onboarding
               </h3>
-              <div className="space-y-1 pl-6">
+              <div className="pl-6 space-y-2">
                 {onboardingLinks.map((link) => (
                   <Link
                     key={link.href}
                     to={link.href}
+                    className={`block py-2 text-sm transition-colors ${
+                      isActive(link.href)
+                        ? "text-white font-medium"
+                        : "text-white/90 hover:text-white"
+                    }`}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`block py-2 text-sm ${isActive(link.href) ? "text-primary font-medium" : "text-white/70 hover:text-primary"}`}
                   >
                     {link.label}
                   </Link>
@@ -271,19 +236,23 @@ export const Header = () => {
               </div>
             </div>
 
-            {/* People Group */}
+            {/* People Links */}
             <div>
-              <h3 className="font-semibold mb-2 text-sm flex items-center gap-2 text-white">
+              <h3 className="font-semibold text-white mb-2 flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 People
               </h3>
-              <div className="space-y-1 pl-6">
+              <div className="pl-6 space-y-2">
                 {peopleLinks.map((link) => (
                   <Link
                     key={link.href}
                     to={link.href}
+                    className={`block py-2 text-sm transition-colors ${
+                      isActive(link.href)
+                        ? "text-white font-medium"
+                        : "text-white/90 hover:text-white"
+                    }`}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`block py-2 text-sm ${isActive(link.href) ? "text-primary font-medium" : "text-white/70 hover:text-primary"}`}
                   >
                     {link.label}
                   </Link>
@@ -291,25 +260,69 @@ export const Header = () => {
               </div>
             </div>
 
-            {/* Training Group */}
+            {/* Training Links */}
             <div>
-              <h3 className="font-semibold mb-2 text-sm flex items-center gap-2 text-white">
+              <h3 className="font-semibold text-white mb-2 flex items-center gap-2">
                 <BookOpen className="h-4 w-4" />
                 Training
               </h3>
-              <div className="space-y-1 pl-6">
+              <div className="pl-6 space-y-2">
                 {trainingLinks.map((link) => (
                   <Link
                     key={link.href}
                     to={link.href}
+                    className={`block py-2 text-sm transition-colors ${
+                      isActive(link.href)
+                        ? "text-white font-medium"
+                        : "text-white/90 hover:text-white"
+                    }`}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`block py-2 text-sm ${isActive(link.href) ? "text-primary font-medium" : "text-white/70 hover:text-primary"}`}
                   >
                     {link.label}
                   </Link>
                 ))}
               </div>
             </div>
+
+            {/* User Actions */}
+            {user.email && (
+              <div className="pt-4 border-t border-white/10">
+                <div className="flex items-center gap-2 mb-4 text-white">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} />
+                    <AvatarFallback className="bg-white text-primary text-sm">
+                      {user.name?.[0]?.toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium">{user.name}</p>
+                    <p className="text-xs opacity-90">{user.email}</p>
+                  </div>
+                </div>
+                {profileLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className="flex items-center gap-2 py-2 text-sm text-white hover:text-white/80 transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <link.icon className="h-4 w-4" />
+                    {link.label}
+                  </Link>
+                ))}
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start text-white hover:text-white/80 hover:bg-white/10 mt-2"
+                  onClick={() => {
+                    handleLogout();
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Log out
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       )}
