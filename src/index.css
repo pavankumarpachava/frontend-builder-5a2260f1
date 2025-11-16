@@ -162,7 +162,10 @@ All colors MUST be HSL.
   
   button:hover, .btn:hover, .cta-btn:hover, [role="button"]:hover {
     backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
     transform: scale(1.03);
+    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
   }
 }
 
