@@ -133,10 +133,10 @@ const Pricing = () => {
 
                   {/* CTA Button */}
                   <Button 
-                    className={`w-full mt-6 ${
+                    className={`w-full mt-6 font-semibold ${
                       tier.highlighted
                         ? 'bg-gradient-to-r from-primary to-accent text-white shadow-xl hover:shadow-2xl'
-                        : 'bg-white/40 dark:bg-gray-900/40 backdrop-blur-sm border-2 border-white/20 text-foreground hover:bg-white/60 dark:hover:bg-gray-900/60'
+                        : 'bg-white/40 dark:bg-gray-900/40 backdrop-blur-sm border-2 border-white/20 text-primary hover:text-primary/80 hover:bg-white/60 dark:hover:bg-gray-900/60'
                     } transition-all duration-300 hover:scale-105`}
                     size="lg"
                     asChild

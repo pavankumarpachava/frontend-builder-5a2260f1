@@ -95,7 +95,7 @@ const Features = () => {
             </p>
             <Button 
               size="lg" 
-              className="mt-8 bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-2 border-white/20 shadow-2xl hover:shadow-3xl transition-all duration-300 text-foreground hover:scale-105"
+              className="mt-8 bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border-2 border-white/20 shadow-2xl hover:shadow-3xl transition-all duration-300 text-primary hover:text-primary/80 font-semibold hover:scale-105"
               asChild
             >
               <Link to="/signup">Start Free Trial</Link>
@@ -169,7 +169,7 @@ const Features = () => {
               </p>
               <Button 
                 size="lg" 
-                className="mt-4 bg-gradient-to-r from-primary to-accent text-white shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                className="mt-4 bg-gradient-to-r from-primary to-accent text-white font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
                 asChild
               >
                 <Link to="/signup">Start Your Journey</Link>

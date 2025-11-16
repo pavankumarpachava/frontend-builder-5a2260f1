@@ -38,7 +38,7 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/dashboard" className="hover:text-white transition-colors">
+                <Link to="/updates" className="hover:text-white transition-colors">
                   Updates
                 </Link>
               </li>
@@ -50,12 +50,12 @@ export const Footer = () => {
             <h3 className="font-semibold mb-4 text-white">Support</h3>
             <ul className="space-y-2 text-sm text-white/90">
               <li>
-                <Link to="/dashboard" className="hover:text-white transition-colors">
+                <Link to="/contact" className="hover:text-white transition-colors">
                   Contact
                 </Link>
               </li>
               <li>
-                <Link to="/dashboard" className="hover:text-white transition-colors">
+                <Link to="/help" className="hover:text-white transition-colors">
                   Help Center
                 </Link>
               </li>
