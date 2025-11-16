@@ -152,3 +152,33 @@ All colors MUST be HSL.
     opacity: 0.8;
   }
 }
+
+/* Global iPhone Glass Hover Effect for Buttons */
+@layer components {
+  button, .btn, .cta-btn, [role="button"] {
+    transition: all 0.25s ease;
+    backdrop-filter: blur(0px);
+  }
+  
+  button:hover, .btn:hover, .cta-btn:hover, [role="button"]:hover {
+    backdrop-filter: blur(12px);
+    transform: scale(1.03);
+  }
+}
+
+/* Progress Bar Styles */
+.progress-container {
+  width: 100%;
+  height: 10px;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.progress-bar {
+  height: 10px;
+  border-radius: 10px;
+  background: linear-gradient(to right, #a45cff, #6f2cff);
+  transition: width 0.4s ease-in-out;
+}
