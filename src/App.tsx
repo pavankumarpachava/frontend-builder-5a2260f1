@@ -23,6 +23,9 @@ import Courses from "./pages/Courses";
 import Feedback from "./pages/Feedback";
 import Features from "./pages/Features";
 import Pricing from "./pages/Pricing";
+import Updates from "./pages/Updates";
+import Contact from "./pages/Contact";
+import HelpCenter from "./pages/HelpCenter";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +43,9 @@ const App = () => (
           <Route path="/signup" element={<Signup />} />
           <Route path="/features" element={<Features />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/updates" element={<Updates />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/help" element={<HelpCenter />} />
           
           {/* Dashboard / Home */}
           <Route path="/dashboard" element={<Dashboard />} />
