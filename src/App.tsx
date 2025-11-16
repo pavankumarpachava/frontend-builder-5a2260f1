@@ -9,6 +9,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import TeamDirectory from "./pages/TeamDirectory";
 import CalendarView from "./pages/CalendarView";
+import ChecklistView from "./pages/ChecklistView";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/team" element={<TeamDirectory />} />
           <Route path="/calendar" element={<CalendarView />} />
+          <Route path="/checklist" element={<ChecklistView />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
