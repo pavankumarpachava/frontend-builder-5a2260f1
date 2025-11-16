@@ -93,9 +93,13 @@ export default {
       backgroundImage: {
         'gradient-primary': 'var(--gradient-primary)',
         'gradient-hero': 'var(--gradient-hero)',
+        'gradient-mesh': 'var(--gradient-mesh)',
+        'gradient-ocean': 'var(--gradient-ocean)',
+        'gradient-sunset': 'var(--gradient-sunset)',
       },
       boxShadow: {
         'glow': 'var(--shadow-glow)',
+        'xl': 'var(--shadow-xl)',
       },
     },
   },
