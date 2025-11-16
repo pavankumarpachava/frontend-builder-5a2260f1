@@ -5,7 +5,7 @@ export const Footer = () => {
   return (
     <footer 
       className="border-t border-white/10 mt-auto"
-      style={{ background: 'linear-gradient(90deg, #FFB2F5 0%, #A275FF 25%, #6E8BFF 50%, #8EE3FF 75%, #C0F8FF 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)' }}
     >
       {/* Main Footer */}
       <div className="container px-4 py-12">
@@ -87,7 +87,7 @@ export const Footer = () => {
       </div>
 
       {/* Sub-Footer */}
-      <div className="border-t border-white/20 bg-black/10">
+      <div className="border-t border-white/10 bg-white/5">
         <div className="container px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-white">

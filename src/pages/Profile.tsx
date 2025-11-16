@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Mail, Briefcase, Building2, Edit, Camera, Upload } from "lucide-react";
+import { User, Mail, Briefcase, Building2, Edit, Camera, Upload, Trash2 } from "lucide-react";
 import { apiGetUser } from "@/lib/api";
 import { toast } from "sonner";
 
@@ -48,6 +48,13 @@ const Profile = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleRemoveImage = () => {
+    const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
+    setAvatarUrl(defaultAvatar);
+    setUser({ ...user, avatar: null });
+    toast.success("Profile picture removed");
   };
 
   const triggerFileInput = () => {
@@ -98,15 +105,26 @@ const Profile = () => {
               <div className="flex-1">
                 <h2 className="text-2xl font-bold mb-1">{user.name}</h2>
                 <p className="text-muted-foreground">{user.role}</p>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={triggerFileInput}
-                  className="mt-2 text-primary hover:text-primary"
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload Photo
-                </Button>
+                <div className="flex gap-2 mt-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={triggerFileInput}
+                    className="text-primary hover:text-primary"
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Photo
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleRemoveImage}
+                    className="text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Remove
+                  </Button>
+                </div>
               </div>
               <Button
                 variant={isEditing ? "default" : "outline"}
