@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Rocket, CheckCircle, Clock, Users, Target, LogOut } from "lucide-react";
-import { toast } from "sonner";
+import { CheckCircle, Clock, Users, Target } from "lucide-react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -20,12 +21,6 @@ const Dashboard = () => {
     setUser(JSON.parse(userData));
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    toast.success("Logged out successfully");
-    navigate("/");
-  };
-
   const checklistItems = [
     { title: "Complete your profile", completed: true },
     { title: "Set up your workspace", completed: true },
@@ -35,35 +30,18 @@ const Dashboard = () => {
   ];
 
   const upcomingTasks = [
-    { title: "Team introduction meeting", time: "Today, 2:00 PM", link: "/calendar" },
-    { title: "IT setup session", time: "Tomorrow, 10:00 AM", link: "/calendar" },
-    { title: "Department orientation", time: "Friday, 9:00 AM", link: "/calendar" },
+    { title: "Team introduction meeting", time: "Today, 2:00 PM", link: "/onboarding/calendar" },
+    { title: "IT setup session", time: "Tomorrow, 10:00 AM", link: "/onboarding/calendar" },
+    { title: "Department orientation", time: "Friday, 9:00 AM", link: "/onboarding/calendar" },
   ];
 
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b border-border bg-card sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Rocket className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              OnboardX
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">Welcome, {user.name}</span>
-            <Button variant="ghost" size="sm" onClick={handleLogout}>
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
-            </Button>
-          </div>
-        </div>
-      </nav>
-
-      <div className="container mx-auto px-6 py-8">
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      
+      <main className="flex-1 container px-4 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">Welcome to OnboardX, {user.name}! 🎉</h1>
@@ -94,7 +72,7 @@ const Dashboard = () => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => navigate("/checklist")}
+                onClick={() => navigate("/onboarding/checklist")}
               >
                 View All
               </Button>
@@ -104,7 +82,7 @@ const Dashboard = () => {
                 <div 
                   key={index}
                   className="flex items-center gap-3 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer"
-                  onClick={() => navigate("/checklist")}
+                  onClick={() => navigate("/onboarding/checklist")}
                 >
                   <div className={`h-6 w-6 rounded-full border-2 flex items-center justify-center ${
                     item.completed 
@@ -141,10 +119,10 @@ const Dashboard = () => {
                   </button>
                 ))}
               </div>
-              <Button 
+                <Button 
                 variant="outline" 
                 className="w-full mt-4"
-                onClick={() => navigate("/calendar")}
+                onClick={() => navigate("/onboarding/calendar")}
               >
                 <Clock className="h-4 w-4 mr-2" />
                 View Full Calendar
@@ -158,7 +136,7 @@ const Dashboard = () => {
                 <Button 
                   variant="outline" 
                   className="w-full justify-start"
-                  onClick={() => navigate("/team")}
+                  onClick={() => navigate("/people/team")}
                 >
                   <Users className="h-4 w-4 mr-2" />
                   View Team Directory
@@ -171,7 +149,9 @@ const Dashboard = () => {
             </Card>
           </div>
         </div>
-      </div>
+      </main>
+      
+      <Footer />
     </div>
   );
 };
