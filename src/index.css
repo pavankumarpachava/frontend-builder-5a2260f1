@@ -154,13 +154,35 @@ All colors MUST be HSL.
 }
 
 /* Global iPhone Glass Hover Effect for Buttons */
-@layer components {
-  button, .btn, .cta-btn, [role="button"] {
+@layer utilities {
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Page transitions */
+  @keyframes pageEnter {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .page-transition {
+    animation: pageEnter 0.4s ease-out;
+  }
+
+  /* Glass button effect - for specific classes only */
+  .glass-button {
     transition: all 0.25s ease;
     backdrop-filter: blur(0px);
   }
   
-  button:hover, .btn:hover, .cta-btn:hover, [role="button"]:hover {
+  .glass-button:hover {
     backdrop-filter: blur(12px);
     background: rgba(255, 255, 255, 0.15) !important;
     border: 1px solid rgba(255, 255, 255, 0.3);
