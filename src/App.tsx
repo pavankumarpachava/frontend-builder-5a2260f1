@@ -65,11 +65,15 @@ const App = () => (
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/documents" element={<Documents />} />
+          <Route path="/goals" element={<Goals />} />
+          <Route path="/resources" element={<Resources />} />
           
           {/* Onboarding Group */}
           <Route path="/onboarding/checklist" element={<ChecklistView />} />
           <Route path="/onboarding/goals" element={<Goals />} />
           <Route path="/onboarding/calendar" element={<CalendarView />} />
+          <Route path="/onboarding/team" element={<TeamDirectory />} />
+          <Route path="/onboarding/resources" element={<Resources />} />
           
           {/* People Group */}
           <Route path="/people/team" element={<TeamDirectory />} />
