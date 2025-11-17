@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ChatbotWidget } from "@/components/ChatbotWidget";
 
 // Pages
+import Index from "./pages/Index";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -28,6 +29,9 @@ import Updates from "./pages/Updates";
 import Contact from "./pages/Contact";
 import HelpCenter from "./pages/HelpCenter";
 import Documents from "./pages/Documents";
+import About from "./pages/About";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,7 +44,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<Index />} />
+          <Route path="/landing" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/features" element={<Features />} />
@@ -48,6 +53,9 @@ const App = () => (
           <Route path="/updates" element={<Updates />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/help" element={<HelpCenter />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
           
           {/* Dashboard / Home */}
           <Route path="/dashboard" element={<Dashboard />} />
