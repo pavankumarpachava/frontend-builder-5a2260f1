@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Rocket, Users, CheckCircle, Calendar, Target, MessageSquare, Zap, TrendingUp, Award, ArrowRight } from "lucide-react";
+import { ScheduleDemoModal } from "@/components/ScheduleDemoModal";
 
 const Landing = () => {
   const navigate = useNavigate();
+  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
 
   const features = [
     {
@@ -232,10 +235,11 @@ const Landing = () => {
               </Button>
               <Button 
                 size="lg"
-                variant="outline"
-                className="text-lg px-10 py-6 h-auto border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm font-semibold"
+                onClick={() => setIsDemoModalOpen(true)}
+                className="text-lg px-10 py-6 h-auto bg-white/20 backdrop-blur-sm border-2 border-white/40 text-white hover:bg-white/30 font-semibold shadow-xl hover:scale-105 transition-all duration-300"
               >
                 Schedule a Demo
+                <Calendar className="ml-2 h-5 w-5" />
               </Button>
             </div>
             
@@ -266,6 +270,11 @@ const Landing = () => {
           <p>© 2024 OnboardX. All rights reserved.</p>
         </div>
       </footer>
+      
+      <ScheduleDemoModal 
+        isOpen={isDemoModalOpen}
+        onClose={() => setIsDemoModalOpen(false)}
+      />
     </div>
   );
 };
