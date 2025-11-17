@@ -23,6 +23,7 @@ import Culture from "./pages/Culture";
 import Resources from "./pages/Resources";
 import Courses from "./pages/Courses";
 import Feedback from "./pages/Feedback";
+import Team from "./pages/Team";
 import Features from "./pages/Features";
 import Pricing from "./pages/Pricing";
 import Updates from "./pages/Updates";
@@ -67,6 +68,7 @@ const App = () => (
           <Route path="/documents" element={<Documents />} />
           <Route path="/goals" element={<Goals />} />
           <Route path="/resources" element={<Resources />} />
+          <Route path="/team" element={<Team />} />
           
           {/* Onboarding Group */}
           <Route path="/onboarding/checklist" element={<ChecklistView />} />
