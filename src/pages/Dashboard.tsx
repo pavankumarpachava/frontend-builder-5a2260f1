@@ -182,7 +182,7 @@ const Dashboard = () => {
                 <Button 
                   variant="outline" 
                   className="w-full justify-start"
-                  onClick={() => navigate("/onboarding/goals")}
+                  onClick={() => navigate("/goals")}
                 >
                   <Target className="h-4 w-4 mr-2" />
                   Set Your Goals
@@ -214,7 +214,7 @@ const Dashboard = () => {
           
           <Card 
             className="p-6 cursor-pointer hover:shadow-xl transition-all hover:scale-105 bg-gradient-to-br from-blue-500/5 to-cyan-500/10 border-blue-500/20"
-            onClick={() => navigate("/onboarding/goals")}
+            onClick={() => navigate("/goals")}
           >
             <Target className="h-8 w-8 text-blue-500 mb-3" />
             <h3 className="font-semibold mb-1">Goals</h3>
@@ -223,7 +223,7 @@ const Dashboard = () => {
           
           <Card 
             className="p-6 cursor-pointer hover:shadow-xl transition-all hover:scale-105 bg-gradient-to-br from-green-500/5 to-emerald-500/10 border-green-500/20"
-            onClick={() => navigate("/onboarding/resources")}
+            onClick={() => navigate("/resources")}
           >
             <Sparkles className="h-8 w-8 text-green-500 mb-3" />
             <h3 className="font-semibold mb-1">Resources</h3>
