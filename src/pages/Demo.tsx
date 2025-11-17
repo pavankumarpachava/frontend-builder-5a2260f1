@@ -4,6 +4,15 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { DemoPlayer } from "@/components/DemoPlayer";
+import { 
+  dashboardDemo,
+  aiDemo,
+  automatedDemo,
+  mentorDemo,
+  learningDemo,
+  analyticsDemo
+} from "@/data/demoContent";
 import { 
   CheckCircle, 
   Users, 
@@ -21,6 +30,11 @@ import {
 
 const Demo = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [selectedDemo, setSelectedDemo] = useState<{
+    slides: any[];
+    title: string;
+    color: string;
+  } | null>(null);
 
   const demoSteps = [
     {
@@ -34,7 +48,8 @@ const Demo = () => {
         "Quick access to mentors",
         "Upcoming events calendar"
       ],
-      color: "from-blue-500 to-purple-600"
+      color: "from-blue-500 to-purple-600",
+      demoSlides: dashboardDemo
     },
     {
       id: 2,
@@ -47,7 +62,8 @@ const Demo = () => {
         "Multi-language support",
         "Learning from interactions"
       ],
-      color: "from-purple-500 to-pink-600"
+      color: "from-purple-500 to-pink-600",
+      demoSlides: aiDemo
     },
     {
       id: 3,
@@ -60,7 +76,8 @@ const Demo = () => {
         "Progress notifications",
         "Department-specific items"
       ],
-      color: "from-green-500 to-teal-600"
+      color: "from-green-500 to-teal-600",
+      demoSlides: automatedDemo
     },
     {
       id: 4,
@@ -73,7 +90,8 @@ const Demo = () => {
         "Chat and video calls",
         "Progress tracking"
       ],
-      color: "from-orange-500 to-red-600"
+      color: "from-orange-500 to-red-600",
+      demoSlides: mentorDemo
     },
     {
       id: 5,
@@ -86,7 +104,8 @@ const Demo = () => {
         "Progress tracking",
         "Certification badges"
       ],
-      color: "from-indigo-500 to-blue-600"
+      color: "from-indigo-500 to-blue-600",
+      demoSlides: learningDemo
     },
     {
       id: 6,
@@ -99,9 +118,18 @@ const Demo = () => {
         "Custom reports",
         "Trend analysis"
       ],
-      color: "from-pink-500 to-rose-600"
+      color: "from-pink-500 to-rose-600",
+      demoSlides: analyticsDemo
     }
   ];
+
+  const openDemo = (demo: typeof demoSteps[0]) => {
+    setSelectedDemo({
+      slides: demo.demoSlides,
+      title: demo.title,
+      color: demo.color
+    });
+  };
 
   const benefits = [
     {
@@ -235,14 +263,19 @@ const Demo = () => {
                   </p>
                 </div>
 
-                {/* Screenshot Placeholder */}
+                {/* Interactive Demo Preview */}
                 <div className="relative">
                   <div className={`aspect-video rounded-xl bg-gradient-to-br ${currentDemo.color} p-1 shadow-2xl`}>
-                    <div className="h-full w-full rounded-lg bg-background/95 backdrop-blur-sm flex items-center justify-center">
+                    <div className="h-full w-full rounded-lg bg-background/95 backdrop-blur-sm flex items-center justify-center relative group cursor-pointer" onClick={() => openDemo(currentDemo)}>
                       <div className="text-center space-y-4 p-8">
-                        <Icon className="h-16 w-16 text-muted-foreground mx-auto opacity-50" />
+                        <div className="h-20 w-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+                          <Play className="h-10 w-10 text-white" />
+                        </div>
+                        <p className="text-lg font-semibold text-foreground">
+                          Watch Interactive Demo
+                        </p>
                         <p className="text-sm text-muted-foreground">
-                          Interactive Demo: {currentDemo.title}
+                          Click to experience {currentDemo.title}
                         </p>
                       </div>
                     </div>
@@ -282,7 +315,7 @@ const Demo = () => {
                 {currentStep === demoSteps.length - 1 ? (
                   <Button
                     size="lg"
-                    className="bg-gradient-to-r from-primary to-accent text-white font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                    className="bg-gradient-to-r from-primary to-accent text-white font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 border-0"
                   >
                     Schedule a Demo
                     <ArrowRight className="h-5 w-5 ml-2" />
@@ -291,7 +324,7 @@ const Demo = () => {
                   <Button
                     onClick={nextStep}
                     size="lg"
-                    className="bg-gradient-to-r from-primary to-accent text-white font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                    className="bg-gradient-to-r from-primary to-accent text-white font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 border-0"
                   >
                     Next Step
                     <ChevronRight className="h-5 w-5 ml-2" />
@@ -344,7 +377,7 @@ const Demo = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                 <Button 
                   size="lg" 
-                  className="bg-gradient-to-r from-primary to-accent text-white font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 px-8 py-6 h-auto text-lg"
+                  className="bg-gradient-to-r from-primary to-accent text-white font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 px-8 py-6 h-auto text-lg border-0"
                 >
                   Schedule a Demo
                   <Calendar className="ml-2 h-5 w-5" />
@@ -352,7 +385,7 @@ const Demo = () => {
                 <Button 
                   size="lg" 
                   variant="outline"
-                  className="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm text-foreground border-2 hover:bg-white/80 dark:hover:bg-gray-900/80 px-8 py-6 h-auto text-lg font-semibold"
+                  className="bg-white/10 dark:bg-gray-900/10 backdrop-blur-sm text-foreground border-2 border-white/20 hover:bg-white/20 dark:hover:bg-gray-900/20 px-8 py-6 h-auto text-lg font-semibold"
                 >
                   Start Free Trial
                   <Zap className="ml-2 h-5 w-5" />
@@ -364,6 +397,16 @@ const Demo = () => {
       </main>
 
       <Footer />
+      
+      {selectedDemo && (
+        <DemoPlayer
+          isOpen={!!selectedDemo}
+          onClose={() => setSelectedDemo(null)}
+          slides={selectedDemo.slides}
+          demoTitle={selectedDemo.title}
+          color={selectedDemo.color}
+        />
+      )}
     </div>
   );
 };
