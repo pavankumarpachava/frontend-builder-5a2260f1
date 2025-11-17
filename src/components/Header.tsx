@@ -307,7 +307,10 @@ export const Header = () => {
               <div className="pt-4 border-t border-white/10">
                 <div className="flex items-center gap-2 mb-4 text-white">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} />
+                    <AvatarImage 
+                      src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`}
+                      key={user.avatar || user.email}
+                    />
                     <AvatarFallback className="bg-white text-primary text-sm">
                       {user.name?.[0]?.toUpperCase() || "U"}
                     </AvatarFallback>

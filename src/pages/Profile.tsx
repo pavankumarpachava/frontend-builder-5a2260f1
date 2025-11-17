@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ImageCropModal } from "@/components/ImageCropModal";
 import { User, Mail, Briefcase, Building2, Edit, Camera, Upload, Trash2 } from "lucide-react";
 import { apiGetUser } from "@/lib/api";
 import { toast } from "sonner";
@@ -14,10 +15,18 @@ const Profile = () => {
   const [user, setUser] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string>("");
+  const [isCropModalOpen, setIsCropModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadUser();
+    
+    // Also check for saved avatar in localStorage
+    const savedAvatar = localStorage.getItem("userAvatar");
+    if (savedAvatar) {
+      setAvatarUrl(savedAvatar);
+    }
   }, []);
 
   const loadUser = async () => {
@@ -44,17 +53,32 @@ const Profile = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const result = reader.result as string;
-        setAvatarUrl(result);
-        const updatedUser = { ...user, avatar: result };
-        setUser(updatedUser);
-        // Persist to localStorage immediately
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-        // Trigger a storage event for other components to update
-        window.dispatchEvent(new Event('storage'));
-        toast.success("Profile picture updated");
+        setSelectedImage(result);
+        setIsCropModalOpen(true);
       };
       reader.readAsDataURL(file);
     }
+    // Reset the input so the same file can be selected again
+    if (event.target) {
+      event.target.value = '';
+    }
+  };
+
+  const handleCropComplete = (croppedImage: string) => {
+    setAvatarUrl(croppedImage);
+    const updatedUser = { ...user, avatar: croppedImage };
+    setUser(updatedUser);
+    // Persist to localStorage immediately
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+    // Save to a specific key for avatar
+    localStorage.setItem("userAvatar", croppedImage);
+    // Trigger a storage event for other components to update
+    window.dispatchEvent(new Event('storage'));
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'userAvatar',
+      newValue: croppedImage,
+    }));
+    toast.success("Profile picture updated successfully!");
   };
 
   const handleRemoveImage = () => {
@@ -237,8 +261,15 @@ const Profile = () => {
           </div>
         </div>
       </main>
-
+      
       <Footer />
+      
+      <ImageCropModal
+        isOpen={isCropModalOpen}
+        onClose={() => setIsCropModalOpen(false)}
+        imageSrc={selectedImage}
+        onCropComplete={handleCropComplete}
+      />
     </div>
   );
 };
