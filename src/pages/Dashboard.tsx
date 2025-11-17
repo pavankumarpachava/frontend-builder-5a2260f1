@@ -205,7 +205,7 @@ const Dashboard = () => {
           
           <Card 
             className="p-6 cursor-pointer hover:shadow-xl transition-all hover:scale-105 bg-gradient-to-br from-accent/5 to-accent/10 border-accent/20"
-            onClick={() => navigate("/onboarding/team")}
+            onClick={() => navigate("/team")}
           >
             <Users className="h-8 w-8 text-accent mb-3" />
             <h3 className="font-semibold mb-1">Team</h3>

@@ -4,11 +4,23 @@ import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BookOpen, Video, FileText, MessageSquare, Download, Search } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { BookOpen, Video, FileText, MessageSquare, Download, Search, Eye, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
+
+interface Document {
+  title: string;
+  type: string;
+  icon: typeof FileText;
+  description: string;
+  category: string;
+  relatedDocs: string[];
+}
 
 const Resources = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
 
   const resourceCategories = [
     {
@@ -45,12 +57,55 @@ const Resources = () => {
     },
   ];
 
-  const documents = [
-    { title: "Employee Handbook", type: "PDF", icon: FileText },
-    { title: "Onboarding Checklist", type: "PDF", icon: FileText },
-    { title: "IT Setup Guide", type: "Document", icon: FileText },
-    { title: "Remote Work Guide", type: "Document", icon: FileText },
-    { title: "Company Culture Guide", type: "Document", icon: BookOpen },
+  const documents: Document[] = [
+    { 
+      title: "Employee Handbook", 
+      type: "PDF", 
+      icon: FileText,
+      description: "Comprehensive guide covering company policies, benefits, code of conduct, and essential HR information for all employees.",
+      category: "HR & Policies",
+      relatedDocs: ["Onboarding Checklist", "Company Culture Guide"]
+    },
+    { 
+      title: "Onboarding Checklist", 
+      type: "PDF", 
+      icon: FileText,
+      description: "Step-by-step checklist to help you complete all essential onboarding tasks during your first 30 days.",
+      category: "Onboarding",
+      relatedDocs: ["Employee Handbook", "IT Setup Guide"]
+    },
+    { 
+      title: "IT Setup Guide", 
+      type: "Document", 
+      icon: FileText,
+      description: "Instructions for setting up your laptop, accessing company systems, installing required software, and troubleshooting common IT issues.",
+      category: "IT & Systems",
+      relatedDocs: ["Remote Work Guide", "Onboarding Checklist"]
+    },
+    { 
+      title: "Remote Work Guide", 
+      type: "Document", 
+      icon: FileText,
+      description: "Best practices for remote work including communication guidelines, time management tips, and home office setup recommendations.",
+      category: "Work Guidelines",
+      relatedDocs: ["IT Setup Guide", "Company Culture Guide"]
+    },
+    { 
+      title: "Company Culture Guide", 
+      type: "Document", 
+      icon: BookOpen,
+      description: "Learn about our values, mission, team traditions, and what makes our company culture unique.",
+      category: "Culture",
+      relatedDocs: ["Employee Handbook", "Remote Work Guide"]
+    },
+    { 
+      title: "Policies & Procedures", 
+      type: "PDF", 
+      icon: FileText,
+      description: "Detailed documentation of company procedures, approval workflows, expense policies, and compliance requirements.",
+      category: "HR & Policies",
+      relatedDocs: ["Employee Handbook"]
+    },
   ];
 
   const handleDownload = (docTitle: string) => {
@@ -142,15 +197,29 @@ const Resources = () => {
                           <p className="text-sm text-muted-foreground">{doc.type}</p>
                         </div>
                       </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleDownload(doc.title)}
-                        className="gap-2"
-                      >
-                        <Download className="h-4 w-4" />
-                        Download
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedDoc(doc);
+                          }}
+                          className="gap-2"
+                        >
+                          <Eye className="h-4 w-4" />
+                          Preview
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleDownload(doc.title)}
+                          className="gap-2"
+                        >
+                          <Download className="h-4 w-4" />
+                          Download
+                        </Button>
+                      </div>
                     </div>
                   );
                 })}
@@ -159,6 +228,84 @@ const Resources = () => {
           </div>
         </div>
       </main>
+
+      {/* Document Preview Modal */}
+      <Dialog open={!!selectedDoc} onOpenChange={() => setSelectedDoc(null)}>
+        <DialogContent className="sm:max-w-[700px]">
+          <DialogHeader>
+            <DialogTitle>Document Preview</DialogTitle>
+            <DialogDescription>View document details and related resources</DialogDescription>
+          </DialogHeader>
+          {selectedDoc && (
+            <div className="space-y-6">
+              {/* Document Thumbnail */}
+              <div className="relative rounded-lg overflow-hidden bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-2 border-border/50 aspect-[4/3] flex items-center justify-center">
+                <div className="text-center">
+                  <selectedDoc.icon className="h-20 w-20 mx-auto mb-4 text-primary" />
+                  <h3 className="text-2xl font-bold mb-1">{selectedDoc.title}</h3>
+                  <Badge variant="secondary">{selectedDoc.type}</Badge>
+                </div>
+              </div>
+
+              {/* Document Info */}
+              <div>
+                <h3 className="text-sm font-semibold mb-2 text-muted-foreground uppercase tracking-wide">Category</h3>
+                <Badge variant="outline" className="mb-4">{selectedDoc.category}</Badge>
+                
+                <h3 className="text-sm font-semibold mb-2 text-muted-foreground uppercase tracking-wide">Description</h3>
+                <p className="text-base leading-relaxed mb-4">{selectedDoc.description}</p>
+              </div>
+
+              {/* Related Documents */}
+              {selectedDoc.relatedDocs.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">Related Resources</h3>
+                  <div className="space-y-2">
+                    {selectedDoc.relatedDocs.map((relatedTitle, index) => {
+                      const relatedDoc = documents.find(d => d.title === relatedTitle);
+                      if (!relatedDoc) return null;
+                      return (
+                        <button
+                          key={index}
+                          onClick={() => setSelectedDoc(relatedDoc)}
+                          className="w-full flex items-center gap-3 p-3 rounded-lg border border-border/50 hover:bg-accent/5 transition-colors text-left"
+                        >
+                          <div className="h-8 w-8 rounded bg-gradient-primary flex items-center justify-center flex-shrink-0">
+                            <relatedDoc.icon className="h-4 w-4 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{relatedDoc.title}</p>
+                            <p className="text-xs text-muted-foreground">{relatedDoc.type}</p>
+                          </div>
+                          <ExternalLink className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-4">
+                <Button 
+                  className="flex-1 gap-2"
+                  onClick={() => handleDownload(selectedDoc.title)}
+                >
+                  <Download className="h-4 w-4" />
+                  Download
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="flex-1"
+                  onClick={() => setSelectedDoc(null)}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>
