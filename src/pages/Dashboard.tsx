@@ -25,6 +25,17 @@ const Dashboard = () => {
       return;
     }
     setUser(JSON.parse(userData));
+    
+    // Listen for storage changes to update user data
+    const handleStorageChange = () => {
+      const updatedUserData = localStorage.getItem("user");
+      if (updatedUserData) {
+        setUser(JSON.parse(updatedUserData));
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, [navigate]);
 
   const checklistItems = [

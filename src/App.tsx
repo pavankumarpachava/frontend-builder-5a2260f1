@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ChatbotWidget } from "@/components/ChatbotWidget";
 
 // Pages
 import Landing from "./pages/Landing";
@@ -26,6 +27,7 @@ import Pricing from "./pages/Pricing";
 import Updates from "./pages/Updates";
 import Contact from "./pages/Contact";
 import HelpCenter from "./pages/HelpCenter";
+import Documents from "./pages/Documents";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +54,7 @@ const App = () => (
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/documents" element={<Documents />} />
           
           {/* Onboarding Group */}
           <Route path="/onboarding/checklist" element={<ChecklistView />} />
@@ -71,6 +74,7 @@ const App = () => (
           {/* Catch all - 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <ChatbotWidget />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
