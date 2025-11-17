@@ -107,7 +107,7 @@ const Landing = () => {
               <Button 
                 size="lg" 
                 variant="outline"
-                className="text-lg px-10 py-6 h-auto border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm font-semibold"
+                className="text-lg px-10 py-6 h-auto border-2 border-white/30 bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm font-semibold shadow-lg"
               >
                 See How It Works
               </Button>

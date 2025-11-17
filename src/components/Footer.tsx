@@ -45,10 +45,15 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Support */}
+          {/* Company */}
           <div>
-            <h3 className="font-semibold mb-4 text-white">Support</h3>
+            <h3 className="font-semibold mb-4 text-white">Company</h3>
             <ul className="space-y-2 text-sm text-white/90">
+              <li>
+                <Link to="/about" className="hover:text-white transition-colors">
+                  About
+                </Link>
+              </li>
               <li>
                 <Link to="/contact" className="hover:text-white transition-colors">
                   Contact
@@ -59,11 +64,6 @@ export const Footer = () => {
                   Help Center
                 </Link>
               </li>
-              <li>
-                <Link to="/training/feedback" className="hover:text-white transition-colors">
-                  Feedback
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -72,12 +72,12 @@ export const Footer = () => {
             <h3 className="font-semibold mb-4 text-white">Legal</h3>
             <ul className="space-y-2 text-sm text-white/90">
               <li>
-                <Link to="/dashboard" className="hover:text-white transition-colors">
+                <Link to="/privacy" className="hover:text-white transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/dashboard" className="hover:text-white transition-colors">
+                <Link to="/terms" className="hover:text-white transition-colors">
                   Terms of Service
                 </Link>
               </li>
