@@ -27,6 +27,8 @@ const Profile = () => {
   };
 
   const handleSave = () => {
+    // Save updated user to localStorage
+    localStorage.setItem("user", JSON.stringify(user));
     setIsEditing(false);
     toast.success("Profile updated successfully");
   };
@@ -43,7 +45,12 @@ const Profile = () => {
       reader.onloadend = () => {
         const result = reader.result as string;
         setAvatarUrl(result);
-        setUser({ ...user, avatar: result });
+        const updatedUser = { ...user, avatar: result };
+        setUser(updatedUser);
+        // Persist to localStorage immediately
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        // Trigger a storage event for other components to update
+        window.dispatchEvent(new Event('storage'));
         toast.success("Profile picture updated");
       };
       reader.readAsDataURL(file);
@@ -53,7 +60,12 @@ const Profile = () => {
   const handleRemoveImage = () => {
     const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
     setAvatarUrl(defaultAvatar);
-    setUser({ ...user, avatar: null });
+    const updatedUser = { ...user, avatar: null };
+    setUser(updatedUser);
+    // Persist to localStorage
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+    // Trigger a storage event
+    window.dispatchEvent(new Event('storage'));
     toast.success("Profile picture removed");
   };
 

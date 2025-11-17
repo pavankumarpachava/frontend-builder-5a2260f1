@@ -135,8 +135,8 @@ const Pricing = () => {
                   <Button 
                     className={`w-full mt-6 font-semibold ${
                       tier.highlighted
-                        ? 'bg-gradient-to-r from-primary to-accent text-white shadow-xl hover:shadow-2xl'
-                        : 'bg-white/40 dark:bg-gray-900/40 backdrop-blur-sm border-2 border-white/20 text-primary hover:text-primary/80 hover:bg-white/60 dark:hover:bg-gray-900/60'
+                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-xl hover:shadow-2xl'
+                        : 'bg-white text-purple-700 hover:bg-purple-50 border-2 border-purple-200'
                     } transition-all duration-300 hover:scale-105`}
                     size="lg"
                     asChild

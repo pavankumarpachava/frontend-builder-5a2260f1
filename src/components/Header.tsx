@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -16,8 +16,17 @@ export const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(() => JSON.parse(localStorage.getItem("user") || "{}"));
   
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  // Listen for storage changes to update avatar in real-time
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setUser(JSON.parse(localStorage.getItem("user") || "{}"));
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -30,6 +39,7 @@ export const Header = () => {
   const profileLinks = [
     { href: "/notifications", label: "Notifications", icon: Bell },
     { href: "/profile", label: "Profile", icon: User },
+    { href: "/documents", label: "Documents", icon: BookOpen },
     { href: "/settings", label: "Settings", icon: Settings },
   ];
 
@@ -155,7 +165,10 @@ export const Header = () => {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-white/10">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} />
+                  <AvatarImage 
+                    src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} 
+                    key={user.avatar || user.email} 
+                  />
                   <AvatarFallback className="bg-white text-primary">
                     {user.name?.[0]?.toUpperCase() || "U"}
                   </AvatarFallback>
