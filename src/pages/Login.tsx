@@ -22,7 +22,7 @@ const Login = () => {
       if (email && password) {
         localStorage.setItem("user", JSON.stringify({ email, name: email.split("@")[0] }));
         toast.success("Welcome back!");
-        navigate("/dashboard");
+        navigate("/demo");
       } else {
         toast.error("Please enter valid credentials");
       }
