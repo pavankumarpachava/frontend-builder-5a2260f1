@@ -27,7 +27,7 @@ const Signup = () => {
       if (formData.email && formData.password && formData.name) {
         localStorage.setItem("user", JSON.stringify(formData));
         toast.success("Account created successfully!");
-        navigate("/dashboard");
+        navigate("/demo");
       } else {
         toast.error("Please fill in all fields");
       }
