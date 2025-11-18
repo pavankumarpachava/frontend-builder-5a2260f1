@@ -35,6 +35,12 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Demo from "./pages/Demo";
 import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminUsers from "./pages/AdminUsers";
+import AdminModules from "./pages/AdminModules";
+import AdminMentors from "./pages/AdminMentors";
+import AdminAnalytics from "./pages/AdminAnalytics";
 
 const queryClient = new QueryClient();
 
@@ -86,6 +92,14 @@ const App = () => (
           <Route path="/training/resources" element={<Resources />} />
           <Route path="/training/courses" element={<Courses />} />
           <Route path="/training/feedback" element={<Feedback />} />
+          
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/modules" element={<AdminModules />} />
+          <Route path="/admin/mentors" element={<AdminMentors />} />
+          <Route path="/admin/analytics" element={<AdminAnalytics />} />
           
           {/* Catch all - 404 */}
           <Route path="*" element={<NotFound />} />
