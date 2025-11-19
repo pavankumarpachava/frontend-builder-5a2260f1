@@ -70,7 +70,9 @@ const Profile = () => {
     setUser(updatedUser);
     // Persist to localStorage immediately
     localStorage.setItem("user", JSON.stringify(updatedUser));
-    // Save to a specific key for avatar
+    // Save to a specific key for employee avatar (separate from admin)
+    const userId = user.id || user.email;
+    localStorage.setItem(`profileImage_employee_${userId}`, croppedImage);
     localStorage.setItem("userAvatar", croppedImage);
     // Trigger a storage event for other components to update
     window.dispatchEvent(new Event('storage'));

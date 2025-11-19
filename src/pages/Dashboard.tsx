@@ -1,73 +1,77 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Input } from "@/components/ui/input";
-import { CheckCircle, Clock, Users, Target, Send, Sparkles } from "lucide-react";
-import { apiAskAssistant } from "@/lib/api";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle, Clock, Users, BookOpen, Calendar as CalendarIcon, Target, TrendingUp, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { apiGetUser } from "@/lib/api";
+import { ProgressWheel } from "@/components/ProgressWheel";
+import confetti from "canvas-confetti";
+import { motion } from "framer-motion";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
-  const [progress, setProgress] = useState(35);
-  const [aiQuestion, setAiQuestion] = useState("");
-  const [aiAnswer, setAiAnswer] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const [completedTasks, setCompletedTasks] = useState<Set<number>>(new Set());
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (!userData) {
-      navigate("/login");
-      return;
-    }
-    setUser(JSON.parse(userData));
-    
-    // Listen for storage changes to update user data
+    loadUser();
     const handleStorageChange = () => {
       const updatedUserData = localStorage.getItem("user");
-      if (updatedUserData) {
-        setUser(JSON.parse(updatedUserData));
-      }
+      if (updatedUserData) setUser(JSON.parse(updatedUserData));
     };
-    
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, [navigate]);
+  }, []);
+
+  const loadUser = async () => {
+    const data = await apiGetUser();
+    if (!data) { navigate("/login"); return; }
+    setUser(data);
+  };
 
   const checklistItems = [
-    { title: "Complete your profile", completed: true },
-    { title: "Set up your workspace", completed: true },
-    { title: "Meet your team", completed: false },
-    { title: "Review company policies", completed: false },
-    { title: "Schedule 1-on-1 with manager", completed: false },
+    { id: 1, title: "Complete Your Profile", description: "Add your photo, bio, and contact details", icon: Users, duration: "5 min" },
+    { id: 2, title: "Set Up Your Workspace", description: "Configure your development environment", icon: Target, duration: "15 min" },
+    { id: 3, title: "Meet Your Team", description: "Schedule introductions with team members", icon: Users, duration: "30 min" },
+    { id: 4, title: "Review Company Policies", description: "Read through our guidelines and procedures", icon: BookOpen, duration: "20 min" },
+    { id: 5, title: "Schedule 1-on-1 with Manager", description: "Book your first check-in meeting", icon: CalendarIcon, duration: "10 min" },
   ];
 
   const upcomingTasks = [
-    { title: "Team introduction meeting", time: "Today, 2:00 PM", link: "/onboarding/calendar" },
-    { title: "IT setup session", time: "Tomorrow, 10:00 AM", link: "/onboarding/calendar" },
-    { title: "Department orientation", time: "Friday, 9:00 AM", link: "/onboarding/calendar" },
+    { title: "Team Introduction Meeting", time: "Today, 2:00 PM", icon: Users, action: () => navigate("/onboarding/calendar") },
+    { title: "IT Setup Session", time: "Tomorrow, 10:00 AM", icon: Target, action: () => navigate("/onboarding/calendar") },
   ];
 
-  const handleAskAssistant = async () => {
-    if (!aiQuestion.trim()) {
-      toast.error("Please enter a question");
-      return;
-    }
-    
-    setIsLoading(true);
-    try {
-      const response = await apiAskAssistant(aiQuestion);
-      setAiAnswer(response.answer);
-      toast.success("Response received!");
-    } catch (error) {
-      toast.error("Failed to get response");
-      console.error(error);
-    } finally {
-      setIsLoading(false);
+  const quickActions = [
+    { title: "View Resources", icon: BookOpen, path: "/training/resources" },
+    { title: "Team Directory", icon: Users, path: "/people/team" },
+  ];
+
+  const progress = (completedTasks.size / checklistItems.length) * 100;
+
+  const toggleTask = (id: number) => {
+    setCompletedTasks(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#667eea', '#764ba2', '#f093fb'] });
+        toast.success("Nice job! Task completed ✅");
+      }
+      return newSet;
+    });
+  };
+
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    if (carouselRef.current) {
+      const scrollAmount = 400;
+      carouselRef.current.scrollTo({ left: carouselRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount), behavior: 'smooth' });
     }
   };
 
@@ -76,236 +80,72 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen flex flex-col page-transition">
       <Header />
-      
       <main className="flex-1 container px-4 py-8">
-        {/* Welcome Section */}
         <div className="mb-8 animate-fade-in">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Welcome to OnboardX, {user.name}! 🎉
-          </h1>
-          <p className="text-lg text-muted-foreground">Let's get you set up and ready to succeed</p>
+          <h1 className="text-4xl font-bold mb-2">Welcome back, <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">{user.name}</span>! 👋</h1>
+          <p className="text-muted-foreground">Here's your onboarding progress</p>
         </div>
 
-        {/* Progress Overview */}
-        <Card className="p-8 mb-8 bg-gradient-to-br from-blue-500/10 via-cyan-500/10 to-teal-500/10 border-2 border-blue-500/20 shadow-xl hover:shadow-2xl transition-all duration-300">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-2xl font-semibold mb-1 text-foreground">Your Onboarding Progress</h2>
-              <p className="text-muted-foreground">You're doing great! Keep going.</p>
-            </div>
-            <div className="text-5xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">{progress}%</div>
-          </div>
-          <Progress value={progress} className="h-3" />
+        <Card className="glass-card border-white/20 hover-scale mb-8">
+          <CardHeader>
+            <CardTitle className="text-xl flex items-center gap-2"><TrendingUp className="h-5 w-5 text-primary" />Your Onboarding Progress</CardTitle>
+            <CardDescription>You're doing great! Keep it up.</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center justify-center py-8">
+            <ProgressWheel percentage={progress} />
+            <p className="text-sm text-muted-foreground mt-6">{completedTasks.size} of {checklistItems.length} tasks completed</p>
+          </CardContent>
         </Card>
 
-        {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-3 gap-6 mb-8">
-          {/* Checklist - Netflix Style Carousel */}
-          <Card className="lg:col-span-2 p-6 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold">Your Onboarding Checklist</h2>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate("/onboarding/checklist")}
-              >
-                View All
-              </Button>
+        <Card className="glass-card border-white/20 mb-8">
+          <CardHeader>
+            <CardTitle className="text-2xl flex items-center gap-2"><CheckCircle className="h-6 w-6 text-primary" />Your Onboarding Checklist</CardTitle>
+            <CardDescription>Complete these tasks to get started</CardDescription>
+          </CardHeader>
+          <CardContent className="pb-6">
+            <div className="relative px-12">
+              <div ref={carouselRef} className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide scroll-smooth" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                {checklistItems.map((item, index) => {
+                  const isCompleted = completedTasks.has(item.id);
+                  return (
+                    <motion.div key={item.id} className="flex-none w-80 snap-center" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
+                      <Card className={`h-full cursor-pointer transition-all duration-[250ms] ease-in-out border-2 transform-gpu ${isCompleted ? 'bg-muted/50 border-muted opacity-60' : 'glass-card border-white/20 hover:scale-[1.12] hover:shadow-2xl hover:shadow-primary/35 hover:border-primary/50 hover:z-10'}`} onClick={() => toggleTask(item.id)} style={{ transformOrigin: 'center', willChange: 'transform' }}>
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className={`h-12 w-12 rounded-lg flex items-center justify-center ${isCompleted ? 'bg-primary/20' : 'bg-gradient-to-br from-primary to-accent'}`}>
+                              <item.icon className={`h-6 w-6 ${isCompleted ? 'text-primary' : 'text-white'}`} />
+                            </div>
+                            {isCompleted && <Badge variant="secondary" className="bg-primary/10 text-primary"><CheckCircle className="h-3 w-3 mr-1" />Done</Badge>}
+                          </div>
+                          <h3 className={`font-semibold text-lg mb-2 ${isCompleted ? 'line-through text-muted-foreground' : ''}`}>{item.title}</h3>
+                          <p className="text-sm text-muted-foreground mb-4">{item.description}</p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-muted-foreground flex items-center gap-1"><Clock className="h-3 w-3" />{item.duration}</span>
+                            {!isCompleted && <Button size="sm" variant="ghost" className="text-primary">Start<ArrowRight className="ml-1 h-3 w-3" /></Button>}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  );
+                })}
+              </div>
+              <Button variant="ghost" size="icon" className="absolute left-0 top-1/2 -translate-y-1/2 bg-background/90 backdrop-blur-sm shadow-xl hover:bg-background hover:scale-110 transition-transform" onClick={() => scrollCarousel('left')}><ChevronLeft className="h-6 w-6" /></Button>
+              <Button variant="ghost" size="icon" className="absolute right-0 top-1/2 -translate-y-1/2 bg-background/90 backdrop-blur-sm shadow-xl hover:bg-background hover:scale-110 transition-transform" onClick={() => scrollCarousel('right')}><ChevronRight className="h-6 w-6" /></Button>
             </div>
-            <div className="relative">
-              <div className="flex gap-4 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory scrollbar-hide">
-                {checklistItems.map((item, index) => (
-                  <div
-                    key={index}
-                    className={`group relative flex-shrink-0 w-72 overflow-hidden rounded-xl border-2 transition-all duration-300 cursor-pointer snap-start ${
-                      item.completed
-                        ? "bg-gradient-to-br from-green-500/10 to-emerald-500/5 border-green-500/30 opacity-75"
-                        : "bg-gradient-to-br from-primary/10 to-secondary/5 border-primary/20 hover:border-primary/50"
-                    } hover:scale-[1.12] hover:shadow-[0_0_25px_rgba(180,80,255,0.35)] hover:z-10`}
-                    style={{
-                      transformOrigin: 'center',
-                      transition: 'transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out, border-color 0.25s ease-in-out'
-                    }}
-                  >
-                    {/* Status Icon - Top Left */}
-                    <div className="absolute top-3 left-3 z-10">
-                      {item.completed ? (
-                        <div className="bg-green-500 rounded-full p-1.5 shadow-lg">
-                          <CheckCircle className="h-5 w-5 text-white" />
-                        </div>
-                      ) : (
-                        <div className="bg-background/80 backdrop-blur-sm border-2 border-primary/40 rounded-full p-1.5 shadow-lg">
-                          <div className="h-5 w-5 rounded-full border-2 border-primary" />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Completed Diagonal Slash */}
-                    {item.completed && (
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="w-full h-1 bg-green-600/60 rotate-[-25deg] shadow-lg" />
-                      </div>
-                    )}
-
-                    {/* Card Content */}
-                    <div className="p-6 pt-12 h-40">
-                      <h3 className={`text-lg font-semibold mb-2 transition-all group-hover:text-primary ${
-                        item.completed ? "text-muted-foreground" : "text-foreground"
-                      }`}>
-                        {item.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {item.completed ? "Completed ✓" : "In Progress"}
-                      </p>
-                    </div>
-
-                    {/* Hover Glow Effect */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                      <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Card>
-
-          {/* Sidebar */}
-          <div className="space-y-6 h-fit">
-          {/* Upcoming Tasks */}
-          <Card className="p-6 h-fit hover:shadow-lg transition-shadow duration-300 border-border/50">
-              <div className="flex items-center gap-2 mb-4">
-                <Clock className="h-5 w-5 text-primary" />
-                <h3 className="text-lg font-semibold">Upcoming</h3>
-              </div>
-              <div className="space-y-3">
-                {upcomingTasks.map((task, index) => (
-                  <button
-                    key={index}
-                    onClick={() => navigate(task.link)}
-                    className="w-full text-left pb-3 border-b border-border last:border-0 last:pb-0 hover:opacity-70 transition-opacity"
-                  >
-                    <p className="font-medium text-sm">{task.title}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{task.time}</p>
-                  </button>
-                ))}
-              </div>
-                <Button 
-                variant="outline" 
-                className="w-full mt-4"
-                onClick={() => navigate("/onboarding/calendar")}
-              >
-                <Clock className="h-4 w-4 mr-2" />
-                View Full Calendar
-              </Button>
-            </Card>
-
-            {/* Quick Actions */}
-            <Card className="p-6 h-fit hover:shadow-lg transition-shadow duration-300 border-border/50">
-              <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-              <div className="space-y-2">
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={() => navigate("/people/team")}
-                >
-                  <Users className="h-4 w-4 mr-2" />
-                  View Team Directory
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={() => navigate("/goals")}
-                >
-                  <Target className="h-4 w-4 mr-2" />
-                  Set Your Goals
-                </Button>
-              </div>
-            </Card>
-          </div>
-        </div>
-
-        {/* Quick Actions Grid */}
-        <div className="grid md:grid-cols-4 gap-4 mb-8">
-          <Card 
-            className="p-6 cursor-pointer hover:shadow-xl transition-all hover:scale-105 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20"
-            onClick={() => navigate("/onboarding/checklist")}
-          >
-            <CheckCircle className="h-8 w-8 text-primary mb-3" />
-            <h3 className="font-semibold mb-1">Checklist</h3>
-            <p className="text-sm text-muted-foreground">Track your tasks</p>
-          </Card>
-          
-          <Card 
-            className="p-6 cursor-pointer hover:shadow-xl transition-all hover:scale-105 bg-gradient-to-br from-accent/5 to-accent/10 border-accent/20"
-            onClick={() => navigate("/team")}
-          >
-            <Users className="h-8 w-8 text-accent mb-3" />
-            <h3 className="font-semibold mb-1">Team</h3>
-            <p className="text-sm text-muted-foreground">Meet your colleagues</p>
-          </Card>
-          
-          <Card 
-            className="p-6 cursor-pointer hover:shadow-xl transition-all hover:scale-105 bg-gradient-to-br from-blue-500/5 to-cyan-500/10 border-blue-500/20"
-            onClick={() => navigate("/goals")}
-          >
-            <Target className="h-8 w-8 text-blue-500 mb-3" />
-            <h3 className="font-semibold mb-1">Goals</h3>
-            <p className="text-sm text-muted-foreground">Set objectives</p>
-          </Card>
-          
-          <Card 
-            className="p-6 cursor-pointer hover:shadow-xl transition-all hover:scale-105 bg-gradient-to-br from-green-500/5 to-emerald-500/10 border-green-500/20"
-            onClick={() => navigate("/resources")}
-          >
-            <Sparkles className="h-8 w-8 text-green-500 mb-3" />
-            <h3 className="font-semibold mb-1">Resources</h3>
-            <p className="text-sm text-muted-foreground">Learn & grow</p>
-          </Card>
-        </div>
-
-        {/* AI Assistant */}
-        <Card className="p-6 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-rose-500/5 border-purple-500/20 shadow-lg">
-          <div className="flex items-center gap-2 mb-4">
-            <Sparkles className="h-6 w-6 text-purple-500" />
-            <h2 className="text-2xl font-semibold">Ask Your AI Assistant</h2>
-          </div>
-          <p className="text-muted-foreground mb-4">
-            Get instant answers about onboarding, company policies, or anything else you need help with.
-          </p>
-
-          
-          <div className="flex gap-2 mb-4">
-            <Input
-              placeholder="Ask any onboarding questions here..."
-              value={aiQuestion}
-              onChange={(e) => setAiQuestion(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleAskAssistant();
-                }
-              }}
-              className="flex-1"
-              disabled={isLoading}
-            />
-            <Button 
-              onClick={handleAskAssistant} 
-              disabled={isLoading}
-              className="shrink-0"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {aiAnswer && (
-            <div className="p-4 bg-background rounded-lg border border-border">
-              <p className="text-sm text-muted-foreground mb-1 font-semibold">Response:</p>
-              <p className="text-sm">{aiAnswer}</p>
-            </div>
-          )}
+          </CardContent>
         </Card>
+
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <Card className="glass-card border-white/20">
+            <CardHeader><CardTitle className="text-xl flex items-center gap-2"><CalendarIcon className="h-5 w-5 text-primary" />Upcoming</CardTitle></CardHeader>
+            <CardContent><div className="space-y-4">{upcomingTasks.map((task, i) => <div key={i} className="flex items-center gap-4 p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer" onClick={task.action}><div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center flex-shrink-0"><task.icon className="h-5 w-5 text-white" /></div><div className="flex-1"><h4 className="font-medium">{task.title}</h4><p className="text-sm text-muted-foreground flex items-center gap-1"><Clock className="h-3 w-3" />{task.time}</p></div><ArrowRight className="h-4 w-4 text-muted-foreground" /></div>)}</div></CardContent>
+          </Card>
+          <Card className="glass-card border-white/20">
+            <CardHeader><CardTitle className="text-xl flex items-center gap-2"><Target className="h-5 w-5 text-primary" />Quick Actions</CardTitle></CardHeader>
+            <CardContent><div className="space-y-3">{quickActions.map((action, i) => <Button key={i} variant="outline" className="w-full justify-start h-auto py-4 glass-card border-white/20 hover:border-primary/50 hover-scale" onClick={() => navigate(action.path)}><div className="flex items-center gap-3"><div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center"><action.icon className="h-5 w-5 text-white" /></div><span className="font-medium">{action.title}</span></div><ArrowRight className="ml-auto h-4 w-4" /></Button>)}</div></CardContent>
+          </Card>
+        </div>
       </main>
-      
       <Footer />
     </div>
   );
