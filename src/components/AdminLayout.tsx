@@ -22,7 +22,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const location = useLocation();
 
   const navItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/admin/dashboard" },
+    { icon: LayoutDashboard, label: "Home", path: "/admin/dashboard" },
     { icon: Users, label: "User Management", path: "/admin/users" },
     { icon: BookOpen, label: "Modules & Resources", path: "/admin/modules" },
     { icon: UserCog, label: "Mentor Management", path: "/admin/mentors" },
