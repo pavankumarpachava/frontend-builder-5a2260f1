@@ -9,47 +9,55 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Rocket, Home, CheckCircle, Users, BookOpen, User, Settings as SettingsIcon, LogOut, Menu, X, Bell, Shield } from "lucide-react";
+import { Rocket, Home, CheckCircle, Users, BookOpen, User, Settings as SettingsIcon, LogOut, Menu, X } from "lucide-react";
 import { toast } from "sonner";
-import { AdminAuthModal } from "@/components/AdminAuthModal";
 
 export const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [adminAuthOpen, setAdminAuthOpen] = useState(false);
   const [user, setUser] = useState<any>(() => JSON.parse(localStorage.getItem("user") || "{}"));
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
   const userRole = localStorage.getItem("userRole");
   
   // Listen for storage changes to update avatar in real-time
   useEffect(() => {
     const handleStorageChange = () => {
-      setUser(JSON.parse(localStorage.getItem("user") || "{}"));
+      const updatedUser = JSON.parse(localStorage.getItem("user") || "{}");
+      setUser(updatedUser);
+      const savedAvatar = localStorage.getItem("userAvatar");
+      if (savedAvatar) {
+        setAvatarUrl(savedAvatar);
+      } else if (updatedUser.avatar) {
+        setAvatarUrl(updatedUser.avatar);
+      }
     };
+    
+    // Initial load
+    handleStorageChange();
     
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  // Show Admin Portal button only if:
-  // - User is not logged in, OR
-  // - User role is admin or mentor
-  const showAdminPortal = !user.email || userRole === "admin" || userRole === "mentor";
-
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userAvatar");
     toast.success("Logged out successfully");
-    navigate("/");
+    navigate("/landing");
   };
 
   const isActive = (path: string) => location.pathname === path;
 
-  const profileLinks = [
-    { href: "/notifications", label: "Notifications", icon: Bell },
-    { href: "/profile", label: "Profile", icon: User },
-    { href: "/documents", label: "Documents", icon: BookOpen },
-    { href: "/settings", label: "Settings", icon: SettingsIcon },
-  ];
+  // Determine if user is logged in
+  const isLoggedIn = user.email;
+  
+  // Admin/Mentor users don't see this header (they use AdminLayout)
+  // This header is only for public users and employees
+  const isEmployee = isLoggedIn && userRole === "employee";
+  const isPublic = !isLoggedIn;
 
   const onboardingLinks = [
     { href: "/onboarding/checklist", label: "Onboarding Checklist", icon: CheckCircle },
@@ -79,312 +87,245 @@ export const Header = () => {
     >
       <div className="container flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
+        <Link to={isEmployee ? "/dashboard" : "/landing"} className="flex items-center gap-2 group">
           <Rocket className="h-6 w-6 text-white group-hover:scale-110 transition-transform" />
           <span className="text-xl font-bold text-white group-hover:scale-105 transition-transform">
             OnboardX
           </span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1">
-          {/* Home - Direct Link */}
-          <Link
-            to="/dashboard"
-            className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-white/10 transition-colors"
-          >
-            <Home className="h-4 w-4" />
-            Home
-          </Link>
-
-          {/* Onboarding */}
-          <div className="group relative">
-            <button className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-white/10 transition-colors">
-              <CheckCircle className="h-4 w-4" />
-              Onboarding
-            </button>
-            <div className="absolute top-full left-0 mt-2 w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
-              <div className="bg-white rounded-[10px] shadow-[0px_8px_20px_rgba(0,0,0,0.15)] p-2.5 min-w-[180px]">
-                {onboardingLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    className={`block select-none rounded-md p-3 text-sm font-medium text-black hover:bg-gray-100 transition-colors ${
-                      isActive(link.href) ? "bg-gray-100" : ""
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* People */}
-          <div className="group relative">
-            <button className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-white/10 transition-colors">
-              <Users className="h-4 w-4" />
-              People
-            </button>
-            <div className="absolute top-full left-0 mt-2 w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
-              <div className="bg-white rounded-[10px] shadow-[0px_8px_20px_rgba(0,0,0,0.15)] p-2.5 min-w-[180px]">
-                {peopleLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    className={`block select-none rounded-md p-3 text-sm font-medium text-black hover:bg-gray-100 transition-colors ${
-                      isActive(link.href) ? "bg-gray-100" : ""
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Training */}
-          <div className="group relative">
-            <button className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-white/10 transition-colors">
-              <BookOpen className="h-4 w-4" />
-              Training
-            </button>
-            <div className="absolute top-full left-0 mt-2 w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
-              <div className="bg-white rounded-[10px] shadow-[0px_8px_20px_rgba(0,0,0,0.15)] p-2.5 min-w-[180px]">
-                {trainingLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    className={`block select-none rounded-md p-3 text-sm font-medium text-black hover:bg-gray-100 transition-colors ${
-                      isActive(link.href) ? "bg-gray-100" : ""
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Admin Portal Link */}
-          {showAdminPortal && (
-            <button
-              onClick={() => setAdminAuthOpen(true)}
-              className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-white/10 transition-colors"
+        {/* Employee Desktop Navigation */}
+        {isEmployee && (
+          <nav className="hidden md:flex items-center gap-1">
+            <Link
+              to="/dashboard"
+              className={`inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                isActive("/dashboard")
+                  ? "bg-white/20 text-white"
+                  : "text-white/90 hover:bg-white/10 hover:text-white"
+              }`}
             >
-              <Shield className="h-4 w-4" />
-              Admin Portal
-            </button>
-          )}
-        </nav>
+              <Home className="h-4 w-4" />
+              Home
+            </Link>
 
-        {/* User Avatar Dropdown */}
-        {user.email && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-white/10">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage 
-                    src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} 
-                    key={user.avatar || user.email} 
-                  />
-                  <AvatarFallback className="bg-white text-primary">
-                    {user.name?.[0]?.toUpperCase() || "U"}
-                  </AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 bg-white rounded-[10px] shadow-[0px_8px_20px_rgba(0,0,0,0.15)]" align="end">
-              <div className="flex items-center justify-start gap-2 p-2">
-                <div className="flex flex-col space-y-1 leading-none">
-                  <p className="font-medium text-sm">{user.name}</p>
-                  <p className="text-xs text-muted-foreground">{user.email}</p>
-                </div>
-              </div>
-              <DropdownMenuSeparator />
-              {profileLinks.map((link) => (
-                <DropdownMenuItem key={link.href} onClick={() => navigate(link.href)}>
-                  <link.icon className="mr-2 h-4 w-4" />
-                  <span>{link.label}</span>
-                </DropdownMenuItem>
-              ))}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout}>
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            {/* Onboarding Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="text-white/90 hover:bg-white/10 hover:text-white"
+                >
+                  <CheckCircle className="mr-2 h-4 w-4" />
+                  Onboarding
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                {onboardingLinks.map((link) => (
+                  <DropdownMenuItem key={link.href} asChild>
+                    <Link to={link.href} className="flex items-center gap-2">
+                      <link.icon className="h-4 w-4" />
+                      {link.label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* People Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="text-white/90 hover:bg-white/10 hover:text-white"
+                >
+                  <Users className="mr-2 h-4 w-4" />
+                  People
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                {peopleLinks.map((link) => (
+                  <DropdownMenuItem key={link.href} asChild>
+                    <Link to={link.href} className="flex items-center gap-2">
+                      <link.icon className="h-4 w-4" />
+                      {link.label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Training Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="text-white/90 hover:bg-white/10 hover:text-white"
+                >
+                  <BookOpen className="mr-2 h-4 w-4" />
+                  Training
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                {trainingLinks.map((link) => (
+                  <DropdownMenuItem key={link.href} asChild>
+                    <Link to={link.href} className="flex items-center gap-2">
+                      <link.icon className="h-4 w-4" />
+                      {link.label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </nav>
         )}
 
-        {/* Mobile Menu Toggle */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden text-white hover:bg-white/10"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </Button>
+        {/* Right Side - User Menu or Auth Buttons */}
+        <div className="flex items-center gap-4">
+          {isEmployee && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                  <Avatar className="h-10 w-10 border-2 border-white/30">
+                    <AvatarImage 
+                      src={avatarUrl || user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} 
+                      alt={user.name} 
+                    />
+                    <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-white">
+                      {user.name?.charAt(0) || user.email?.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <div className="px-2 py-1.5">
+                  <p className="text-sm font-medium">{user.name}</p>
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/settings" className="flex items-center gap-2">
+                    <SettingsIcon className="h-4 w-4" />
+                    Settings
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+
+          {isPublic && (
+            <>
+              <Link to="/login">
+                <Button variant="ghost" className="text-white hover:bg-white/10">
+                  Login
+                </Button>
+              </Link>
+              <Link to="/signup">
+                <Button className="bg-white/20 text-white hover:bg-white/30 border border-white/30">
+                  Get Started
+                </Button>
+              </Link>
+              <Link to="/admin/login">
+                <Button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90">
+                  Admin
+                </Button>
+              </Link>
+            </>
+          )}
+
+          {/* Mobile Menu Toggle */}
+          <Button
+            variant="ghost"
+            className="md:hidden text-white"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </Button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div 
-          className="md:hidden border-t border-white/10 backdrop-blur-xl"
-          style={{ 
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)'
-          }}
-        >
-          <div className="container px-4 py-4 space-y-4">
-            {/* Home Link */}
-            <div>
-              <Link
-                to="/dashboard"
-                className="flex items-center gap-2 font-semibold text-white py-2"
-                onClick={() => setMobileMenuOpen(false)}
+      {mobileMenuOpen && isEmployee && (
+        <div className="md:hidden border-t border-white/10 bg-gradient-to-br from-purple-900/95 to-pink-900/95 backdrop-blur-xl">
+          <nav className="container px-4 py-4 space-y-2">
+            <Link
+              to="/dashboard"
+              className="flex items-center gap-2 px-4 py-2 text-white rounded-md hover:bg-white/10"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Home className="h-4 w-4" />
+              Home
+            </Link>
+            
+            <div className="space-y-1">
+              <p className="px-4 py-2 text-sm font-semibold text-white/70">Onboarding</p>
+              {onboardingLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="flex items-center gap-2 px-4 py-2 text-white/90 rounded-md hover:bg-white/10"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <link.icon className="h-4 w-4" />
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+
+            <div className="space-y-1">
+              <p className="px-4 py-2 text-sm font-semibold text-white/70">People</p>
+              {peopleLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="flex items-center gap-2 px-4 py-2 text-white/90 rounded-md hover:bg-white/10"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <link.icon className="h-4 w-4" />
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+
+            <div className="space-y-1">
+              <p className="px-4 py-2 text-sm font-semibold text-white/70">Training</p>
+              {trainingLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="flex items-center gap-2 px-4 py-2 text-white/90 rounded-md hover:bg-white/10"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <link.icon className="h-4 w-4" />
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+
+            <div className="pt-4 border-t border-white/10">
+              <Button
+                onClick={handleLogout}
+                variant="ghost"
+                className="w-full justify-start text-white hover:bg-white/10"
               >
-                <Home className="h-4 w-4" />
-                Home
-              </Link>
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </Button>
             </div>
-
-            {/* Onboarding Links */}
-            <div>
-              <h3 className="font-semibold text-white mb-2 flex items-center gap-2">
-                <CheckCircle className="h-4 w-4" />
-                Onboarding
-              </h3>
-              <div className="pl-6 space-y-2">
-                {onboardingLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    className={`block py-2 text-sm transition-colors ${
-                      isActive(link.href)
-                        ? "text-white font-medium"
-                        : "text-white/90 hover:text-white"
-                    }`}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* People Links */}
-            <div>
-              <h3 className="font-semibold text-white mb-2 flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                People
-              </h3>
-              <div className="pl-6 space-y-2">
-                {peopleLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    className={`block py-2 text-sm transition-colors ${
-                      isActive(link.href)
-                        ? "text-white font-medium"
-                        : "text-white/90 hover:text-white"
-                    }`}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* Training Links */}
-            <div>
-              <h3 className="font-semibold text-white mb-2 flex items-center gap-2">
-                <BookOpen className="h-4 w-4" />
-                Training
-              </h3>
-              <div className="pl-6 space-y-2">
-                {trainingLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    className={`block py-2 text-sm transition-colors ${
-                      isActive(link.href)
-                        ? "text-white font-medium"
-                        : "text-white/90 hover:text-white"
-                    }`}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* Admin Portal Link */}
-            {showAdminPortal && (
-              <div>
-                <button
-                  onClick={() => {
-                    setAdminAuthOpen(true);
-                    setMobileMenuOpen(false);
-                  }}
-                  className="flex items-center gap-2 font-semibold text-white py-2"
-                >
-                  <Shield className="h-4 w-4" />
-                  Admin Portal
-                </button>
-              </div>
-            )}
-
-            {/* User Actions */}
-            {user.email && (
-              <div className="pt-4 border-t border-white/10">
-                <div className="flex items-center gap-2 mb-4 text-white">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage 
-                      src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`}
-                      key={user.avatar || user.email}
-                    />
-                    <AvatarFallback className="bg-white text-primary text-sm">
-                      {user.name?.[0]?.toUpperCase() || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="text-sm font-medium">{user.name}</p>
-                    <p className="text-xs opacity-90">{user.email}</p>
-                  </div>
-                </div>
-                {profileLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    className="flex items-center gap-2 py-2 text-sm text-white hover:text-white/80 transition-colors"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <link.icon className="h-4 w-4" />
-                    {link.label}
-                  </Link>
-                ))}
-                <Button 
-                  variant="ghost" 
-                  className="w-full justify-start text-white hover:text-white/80 hover:bg-white/10 mt-2"
-                  onClick={() => {
-                    handleLogout();
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Log out
-                </Button>
-              </div>
-            )}
-          </div>
+          </nav>
         </div>
       )}
-
-      {/* Admin Auth Modal */}
-      <AdminAuthModal open={adminAuthOpen} onOpenChange={setAdminAuthOpen} />
     </header>
   );
 };

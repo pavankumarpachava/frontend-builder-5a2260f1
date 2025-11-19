@@ -22,7 +22,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const location = useLocation();
 
   const navItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/admin/dashboard" },
+    { icon: LayoutDashboard, label: "Home", path: "/dashboard" },
     { icon: Users, label: "User Management", path: "/admin/users" },
     { icon: BookOpen, label: "Modules & Resources", path: "/admin/modules" },
     { icon: UserCog, label: "Mentor Management", path: "/admin/mentors" },
@@ -52,10 +52,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       >
         <div className="container flex h-16 items-center justify-between px-4">
           {/* Logo */}
-          <Link to="/admin/dashboard" className="flex items-center gap-2 group">
+          <Link to="/landing" className="flex items-center gap-2 group">
             <Rocket className="h-6 w-6 text-white group-hover:scale-110 transition-transform" />
             <span className="text-xl font-bold text-white group-hover:scale-105 transition-transform">
-              Admin Portal
+              OnboardX
             </span>
           </Link>
 
@@ -77,15 +77,25 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             ))}
           </nav>
 
-          {/* Logout Button */}
-          <Button
-            onClick={handleLogout}
-            variant="ghost"
-            className="text-white hover:bg-white/10"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            Logout
-          </Button>
+          {/* Profile & Logout */}
+          <div className="flex items-center gap-2">
+            <Link to="/admin/profile">
+              <Button
+                variant="ghost"
+                className="text-white hover:bg-white/10"
+              >
+                Profile
+              </Button>
+            </Link>
+            <Button
+              onClick={handleLogout}
+              variant="ghost"
+              className="text-white hover:bg-white/10"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
 

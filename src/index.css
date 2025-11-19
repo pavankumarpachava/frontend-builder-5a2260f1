@@ -207,3 +207,43 @@ All colors MUST be HSL.
   background: linear-gradient(to right, #a45cff, #6f2cff);
   transition: width 0.4s ease-in-out;
 }
+
+/* Performance Optimizations */
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* GPU acceleration for animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Lazy loading optimization */
+img[loading="lazy"] {
+  content-visibility: auto;
+}
+
+/* Smooth scrolling for carousel */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+/* Optimize hover transitions */
+.hover-scale {
+  transition: transform 0.25s ease-in-out;
+  will-change: transform;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
