@@ -157,6 +157,15 @@ export const Header = () => {
               </div>
             </div>
           </div>
+
+          {/* Admin Portal Link */}
+          <Link
+            to="/admin/login"
+            className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-white/10 transition-colors"
+          >
+            <Settings className="h-4 w-4" />
+            Admin
+          </Link>
         </nav>
 
         {/* User Avatar Dropdown */}
@@ -300,6 +309,18 @@ export const Header = () => {
                   </Link>
                 ))}
               </div>
+            </div>
+
+            {/* Admin Portal Link */}
+            <div>
+              <Link
+                to="/admin/login"
+                className="flex items-center gap-2 font-semibold text-white py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Settings className="h-4 w-4" />
+                Admin Portal
+              </Link>
             </div>
 
             {/* User Actions */}

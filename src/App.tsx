@@ -41,6 +41,8 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminModules from "./pages/AdminModules";
 import AdminMentors from "./pages/AdminMentors";
 import AdminAnalytics from "./pages/AdminAnalytics";
+import AdminSettings from "./pages/AdminSettings";
+import MentorDashboard from "./pages/MentorDashboard";
 
 const queryClient = new QueryClient();
 
@@ -100,6 +102,10 @@ const App = () => (
           <Route path="/admin/modules" element={<AdminModules />} />
           <Route path="/admin/mentors" element={<AdminMentors />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
+          <Route path="/admin/settings" element={<AdminSettings />} />
+          
+          {/* Mentor Routes */}
+          <Route path="/mentor/dashboard" element={<MentorDashboard />} />
           
           {/* Catch all - 404 */}
           <Route path="*" element={<NotFound />} />
