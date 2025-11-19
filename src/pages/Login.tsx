@@ -21,8 +21,9 @@ const Login = () => {
     setTimeout(() => {
       if (email && password) {
         localStorage.setItem("user", JSON.stringify({ email, name: email.split("@")[0] }));
+        localStorage.setItem("userRole", "employee");
         toast.success("Welcome back!");
-        navigate("/demo");
+        navigate("/dashboard");
       } else {
         toast.error("Please enter valid credentials");
       }
