@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -327,30 +329,11 @@ const ChecklistView = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background page-transition">
-      {/* Navigation */}
-      <nav className="border-b border-border bg-card sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => navigate("/dashboard")}
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
-            <div className="flex items-center gap-2">
-              <Rocket className="h-6 w-6 text-primary" />
-              <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                OnboardX
-              </span>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <div className="container mx-auto px-6 py-8">
+    <div className="min-h-screen flex flex-col bg-background page-transition">
+      <Header />
+      
+      <main className="flex-1">
+        <div className="container mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">Onboarding Checklist</h1>
@@ -673,6 +656,9 @@ const ChecklistView = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </main>
+      
+      <Footer />
     </div>
   );
 };
