@@ -28,6 +28,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     { icon: BookOpen, label: "Modules & Resources", path: "/admin/modules" },
     { icon: UserCog, label: "Mentor Management", path: "/admin/mentors" },
     { icon: BarChart3, label: "Analytics", path: "/admin/analytics" },
+    { icon: Menu, label: "Settings", path: "/admin/settings" },
   ];
 
   const handleLogout = () => {
