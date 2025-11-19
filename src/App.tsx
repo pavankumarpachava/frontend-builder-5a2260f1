@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ChatbotWidget } from "@/components/ChatbotWidget";
+import { ProtectedAdminRoute } from "@/components/ProtectedAdminRoute";
 
 // Pages
 import Index from "./pages/Index";
@@ -35,6 +36,7 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Demo from "./pages/Demo";
 import NotFound from "./pages/NotFound";
+import NotAuthorized from "./pages/NotAuthorized";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
@@ -96,16 +98,17 @@ const App = () => (
           <Route path="/training/feedback" element={<Feedback />} />
           
           {/* Admin Routes */}
+          <Route path="/not-authorized" element={<NotAuthorized />} />
           <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/modules" element={<AdminModules />} />
-          <Route path="/admin/mentors" element={<AdminMentors />} />
-          <Route path="/admin/analytics" element={<AdminAnalytics />} />
-          <Route path="/admin/settings" element={<AdminSettings />} />
+          <Route path="/admin/dashboard" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
+          <Route path="/admin/users" element={<ProtectedAdminRoute><AdminUsers /></ProtectedAdminRoute>} />
+          <Route path="/admin/modules" element={<ProtectedAdminRoute><AdminModules /></ProtectedAdminRoute>} />
+          <Route path="/admin/mentors" element={<ProtectedAdminRoute><AdminMentors /></ProtectedAdminRoute>} />
+          <Route path="/admin/analytics" element={<ProtectedAdminRoute><AdminAnalytics /></ProtectedAdminRoute>} />
+          <Route path="/admin/settings" element={<ProtectedAdminRoute><AdminSettings /></ProtectedAdminRoute>} />
           
           {/* Mentor Routes */}
-          <Route path="/mentor/dashboard" element={<MentorDashboard />} />
+          <Route path="/mentor/dashboard" element={<ProtectedAdminRoute><MentorDashboard /></ProtectedAdminRoute>} />
           
           {/* Catch all - 404 */}
           <Route path="*" element={<NotFound />} />
