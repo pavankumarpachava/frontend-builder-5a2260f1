@@ -63,8 +63,14 @@ const Landing = () => {
             <Button variant="ghost" onClick={() => navigate("/login")} className="text-white hover:bg-white/10">
               Login
             </Button>
-            <Button onClick={() => navigate("/signup")} className="bg-white text-primary hover:bg-white/90">
+            <Button onClick={() => navigate("/signup")} className="bg-white text-primary hover:bg-white/90 shadow-lg hover:shadow-xl transition-all">
               Get Started
+            </Button>
+            <Button 
+              onClick={() => navigate("/admin/login")} 
+              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 shadow-lg hover:shadow-2xl hover:shadow-purple-500/50 transition-all"
+            >
+              Admin
             </Button>
           </div>
         </div>
