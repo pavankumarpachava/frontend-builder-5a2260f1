@@ -1,391 +1,305 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import AdminLayout from "@/components/AdminLayout";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Save, Mail, Workflow, BookOpen, Settings as SettingsIcon } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { 
+  FileText, 
+  Upload, 
+  Download, 
+  Trash2, 
+  Search,
+  File,
+  FileSpreadsheet,
+  FileImage,
+  FileVideo,
+  FileAudio
+} from "lucide-react";
+import { toast } from "sonner";
+import { format } from "date-fns";
+
+interface Document {
+  id: string;
+  name: string;
+  type: string;
+  size: number;
+  uploadedAt: Date;
+  uploadedBy: string;
+  category: string;
+}
 
 const AdminSettings = () => {
-  const { toast } = useToast();
-  const [emailSettings, setEmailSettings] = useState({
-    welcomeSubject: "Welcome to OnboardX!",
-    welcomeBody: "Hi {{name}},\n\nWelcome to our company! We're excited to have you on board.\n\nBest regards,\nThe OnboardX Team",
-    reminderSubject: "Don't forget to complete your onboarding tasks",
-    reminderBody: "Hi {{name}},\n\nYou have pending onboarding tasks. Please login to complete them.\n\nBest regards,\nThe OnboardX Team",
-  });
-
-  const [workflowSettings, setWorkflowSettings] = useState({
-    autoAssignMentor: true,
-    sendWelcomeEmail: true,
-    requireManagerApproval: false,
-    onboardingDuration: "30",
-  });
-
-  const [defaultModules, setDefaultModules] = useState([
-    { id: "1", name: "Welcome & Company Overview", assigned: true },
-    { id: "2", name: "Tools & Technology Setup", assigned: true },
-    { id: "3", name: "Team Structure & Processes", assigned: true },
-    { id: "4", name: "First Project Guidelines", assigned: false },
+  const [documents, setDocuments] = useState<Document[]>([
+    {
+      id: "1",
+      name: "Employee Handbook.pdf",
+      type: "application/pdf",
+      size: 2048000,
+      uploadedAt: new Date("2024-01-15"),
+      uploadedBy: "Admin",
+      category: "Policies"
+    },
+    {
+      id: "2",
+      name: "Welcome Guide.docx",
+      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      size: 1024000,
+      uploadedAt: new Date("2024-01-20"),
+      uploadedBy: "Admin",
+      category: "Onboarding"
+    },
+    {
+      id: "3",
+      name: "Company Values.pdf",
+      type: "application/pdf",
+      size: 512000,
+      uploadedAt: new Date("2024-02-01"),
+      uploadedBy: "HR Manager",
+      category: "Culture"
+    }
   ]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [systemPreferences, setSystemPreferences] = useState({
-    timezone: "UTC",
-    dateFormat: "MM/DD/YYYY",
-    language: "en",
-    theme: "light",
+  const categories = ["all", "Policies", "Onboarding", "Culture", "Training", "Other"];
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      const newDocuments: Document[] = [];
+      Array.from(files).forEach((file) => {
+        if (file.size > 50 * 1024 * 1024) {
+          toast.error(`${file.name} is too large. Max 50MB`);
+          return;
+        }
+
+        const newDoc: Document = {
+          id: Date.now().toString() + Math.random(),
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          uploadedAt: new Date(),
+          uploadedBy: "Admin",
+          category: "Other"
+        };
+        newDocuments.push(newDoc);
+      });
+
+      setDocuments([...newDocuments, ...documents]);
+      toast.success(`${newDocuments.length} document(s) uploaded`);
+    }
+    
+    if (event.target) {
+      event.target.value = '';
+    }
+  };
+
+  const handleDelete = (id: string) => {
+    setDocuments(documents.filter(doc => doc.id !== id));
+    toast.success("Document deleted");
+  };
+
+  const handleDownload = (doc: Document) => {
+    toast.success(`Downloading ${doc.name}`);
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  };
+
+  const getFileIcon = (type: string) => {
+    if (type.includes("pdf")) return FileText;
+    if (type.includes("spreadsheet") || type.includes("excel")) return FileSpreadsheet;
+    if (type.includes("image")) return FileImage;
+    if (type.includes("video")) return FileVideo;
+    if (type.includes("audio")) return FileAudio;
+    return File;
+  };
+
+  const getFileTypeColor = (type: string) => {
+    if (type.includes("pdf")) return "bg-red-500/10 text-red-500 border-red-500/20";
+    if (type.includes("spreadsheet") || type.includes("excel")) return "bg-green-500/10 text-green-500 border-green-500/20";
+    if (type.includes("image")) return "bg-blue-500/10 text-blue-500 border-blue-500/20";
+    if (type.includes("video")) return "bg-purple-500/10 text-purple-500 border-purple-500/20";
+    if (type.includes("audio")) return "bg-orange-500/10 text-orange-500 border-orange-500/20";
+    return "bg-gray-500/10 text-gray-500 border-gray-500/20";
+  };
+
+  const filteredDocuments = documents.filter(doc => {
+    const matchesSearch = doc.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === "all" || doc.category === selectedCategory;
+    return matchesSearch && matchesCategory;
   });
-
-  const handleSaveEmailTemplates = () => {
-    toast({
-      title: "Email Templates Saved",
-      description: "Your email templates have been updated successfully",
-    });
-  };
-
-  const handleSaveWorkflow = () => {
-    toast({
-      title: "Workflow Settings Saved",
-      description: "Onboarding workflow has been updated",
-    });
-  };
-
-  const handleSaveModules = () => {
-    toast({
-      title: "Default Modules Updated",
-      description: "Default module assignments have been saved",
-    });
-  };
-
-  const handleSavePreferences = () => {
-    toast({
-      title: "System Preferences Saved",
-      description: "System preferences have been updated",
-    });
-  };
 
   return (
     <AdminLayout>
       <div className="p-8 space-y-8">
-        {/* Header */}
         <div className="space-y-2">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Platform Settings
+            Document Management
           </h1>
           <p className="text-muted-foreground">
-            Configure email templates, workflows, modules, and system preferences
+            Upload, manage, and organize documents
           </p>
         </div>
 
-        {/* Settings Tabs */}
-        <Tabs defaultValue="email" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto">
-            <TabsTrigger value="email" className="gap-2">
-              <Mail className="h-4 w-4" />
-              Email Templates
-            </TabsTrigger>
-            <TabsTrigger value="workflow" className="gap-2">
-              <Workflow className="h-4 w-4" />
-              Workflow
-            </TabsTrigger>
-            <TabsTrigger value="modules" className="gap-2">
-              <BookOpen className="h-4 w-4" />
-              Default Modules
-            </TabsTrigger>
-            <TabsTrigger value="system" className="gap-2">
-              <SettingsIcon className="h-4 w-4" />
-              System
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Email Templates Tab */}
-          <TabsContent value="email" className="space-y-6">
-            <Card className="p-6 bg-white/80 backdrop-blur-lg border border-white/20 shadow-lg">
-              <h3 className="text-xl font-semibold mb-6">Email Templates</h3>
-              
-              <div className="space-y-6">
-                {/* Welcome Email */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-medium text-primary">Welcome Email</h4>
-                  <div className="space-y-2">
-                    <Label htmlFor="welcome-subject">Subject Line</Label>
-                    <Input
-                      id="welcome-subject"
-                      value={emailSettings.welcomeSubject}
-                      onChange={(e) =>
-                        setEmailSettings({ ...emailSettings, welcomeSubject: e.target.value })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="welcome-body">Email Body</Label>
-                    <Textarea
-                      id="welcome-body"
-                      value={emailSettings.welcomeBody}
-                      onChange={(e) =>
-                        setEmailSettings({ ...emailSettings, welcomeBody: e.target.value })
-                      }
-                      rows={6}
-                    />
-                    <p className="text-sm text-muted-foreground">
-                      Available variables: {`{{name}}, {{email}}, {{company}}`}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Reminder Email */}
-                <div className="space-y-4 pt-6 border-t">
-                  <h4 className="text-lg font-medium text-primary">Reminder Email</h4>
-                  <div className="space-y-2">
-                    <Label htmlFor="reminder-subject">Subject Line</Label>
-                    <Input
-                      id="reminder-subject"
-                      value={emailSettings.reminderSubject}
-                      onChange={(e) =>
-                        setEmailSettings({ ...emailSettings, reminderSubject: e.target.value })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="reminder-body">Email Body</Label>
-                    <Textarea
-                      id="reminder-body"
-                      value={emailSettings.reminderBody}
-                      onChange={(e) =>
-                        setEmailSettings({ ...emailSettings, reminderBody: e.target.value })
-                      }
-                      rows={6}
-                    />
-                  </div>
-                </div>
-
-                <Button
-                  onClick={handleSaveEmailTemplates}
-                  className="w-full bg-gradient-to-r from-primary to-secondary"
-                >
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Email Templates
-                </Button>
-              </div>
-            </Card>
-          </TabsContent>
-
-          {/* Workflow Tab */}
-          <TabsContent value="workflow" className="space-y-6">
-            <Card className="p-6 bg-white/80 backdrop-blur-lg border border-white/20 shadow-lg">
-              <h3 className="text-xl font-semibold mb-6">Onboarding Workflow</h3>
-              
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label>Auto-assign Mentor</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Automatically assign a mentor to new employees
-                    </p>
-                  </div>
-                  <Switch
-                    checked={workflowSettings.autoAssignMentor}
-                    onCheckedChange={(checked) =>
-                      setWorkflowSettings({ ...workflowSettings, autoAssignMentor: checked })
-                    }
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label>Send Welcome Email</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Send welcome email when user account is created
-                    </p>
-                  </div>
-                  <Switch
-                    checked={workflowSettings.sendWelcomeEmail}
-                    onCheckedChange={(checked) =>
-                      setWorkflowSettings({ ...workflowSettings, sendWelcomeEmail: checked })
-                    }
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label>Require Manager Approval</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Tasks require manager approval before completion
-                    </p>
-                  </div>
-                  <Switch
-                    checked={workflowSettings.requireManagerApproval}
-                    onCheckedChange={(checked) =>
-                      setWorkflowSettings({ ...workflowSettings, requireManagerApproval: checked })
-                    }
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="onboarding-duration">Onboarding Duration (Days)</Label>
-                  <Input
-                    id="onboarding-duration"
-                    type="number"
-                    value={workflowSettings.onboardingDuration}
-                    onChange={(e) =>
-                      setWorkflowSettings({ ...workflowSettings, onboardingDuration: e.target.value })
-                    }
-                  />
-                </div>
-
-                <Button
-                  onClick={handleSaveWorkflow}
-                  className="w-full bg-gradient-to-r from-primary to-secondary"
-                >
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Workflow Settings
-                </Button>
-              </div>
-            </Card>
-          </TabsContent>
-
-          {/* Default Modules Tab */}
-          <TabsContent value="modules" className="space-y-6">
-            <Card className="p-6 bg-white/80 backdrop-blur-lg border border-white/20 shadow-lg">
-              <h3 className="text-xl font-semibold mb-6">Default Module Assignments</h3>
-              <p className="text-sm text-muted-foreground mb-6">
-                Select which modules should be automatically assigned to new employees
+        <Card className="p-6 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
+          <div className="flex flex-col md:flex-row items-center gap-4">
+            <div className="flex-1">
+              <h3 className="font-semibold mb-2 flex items-center gap-2">
+                <Upload className="h-5 w-5 text-primary" />
+                Upload Documents
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                All file types supported (Max 50MB)
               </p>
-              
-              <div className="space-y-4">
-                {defaultModules.map((module) => (
-                  <div
-                    key={module.id}
-                    className="flex items-center justify-between p-4 rounded-lg bg-muted/50"
-                  >
-                    <Label htmlFor={`module-${module.id}`} className="cursor-pointer">
-                      {module.name}
-                    </Label>
-                    <Switch
-                      id={`module-${module.id}`}
-                      checked={module.assigned}
-                      onCheckedChange={(checked) => {
-                        setDefaultModules(
-                          defaultModules.map((m) =>
-                            m.id === module.id ? { ...m, assigned: checked } : m
-                          )
-                        );
-                      }}
-                    />
-                  </div>
-                ))}
+            </div>
+            <Button 
+              onClick={triggerFileInput}
+              className="bg-gradient-to-r from-primary to-secondary"
+            >
+              <Upload className="mr-2 h-4 w-4" />
+              Choose Files
+            </Button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept="*/*"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
+          </div>
+        </Card>
 
+        <Card className="p-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search documents..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {categories.map((category) => (
                 <Button
-                  onClick={handleSaveModules}
-                  className="w-full bg-gradient-to-r from-primary to-secondary mt-6"
+                  key={category}
+                  variant={selectedCategory === category ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedCategory(category)}
                 >
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Module Settings
+                  {category.charAt(0).toUpperCase() + category.slice(1)}
                 </Button>
-              </div>
-            </Card>
-          </TabsContent>
+              ))}
+            </div>
+          </div>
+        </Card>
 
-          {/* System Preferences Tab */}
-          <TabsContent value="system" className="space-y-6">
-            <Card className="p-6 bg-white/80 backdrop-blur-lg border border-white/20 shadow-lg">
-              <h3 className="text-xl font-semibold mb-6">System Preferences</h3>
-              
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="timezone">Timezone</Label>
-                  <Select
-                    value={systemPreferences.timezone}
-                    onValueChange={(value) =>
-                      setSystemPreferences({ ...systemPreferences, timezone: value })
-                    }
-                  >
-                    <SelectTrigger id="timezone">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="UTC">UTC</SelectItem>
-                      <SelectItem value="EST">Eastern Time</SelectItem>
-                      <SelectItem value="CST">Central Time</SelectItem>
-                      <SelectItem value="PST">Pacific Time</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold">
+            Documents ({filteredDocuments.length})
+          </h2>
 
-                <div className="space-y-2">
-                  <Label htmlFor="date-format">Date Format</Label>
-                  <Select
-                    value={systemPreferences.dateFormat}
-                    onValueChange={(value) =>
-                      setSystemPreferences({ ...systemPreferences, dateFormat: value })
-                    }
-                  >
-                    <SelectTrigger id="date-format">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="MM/DD/YYYY">MM/DD/YYYY</SelectItem>
-                      <SelectItem value="DD/MM/YYYY">DD/MM/YYYY</SelectItem>
-                      <SelectItem value="YYYY-MM-DD">YYYY-MM-DD</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="language">Language</Label>
-                  <Select
-                    value={systemPreferences.language}
-                    onValueChange={(value) =>
-                      setSystemPreferences({ ...systemPreferences, language: value })
-                    }
-                  >
-                    <SelectTrigger id="language">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="en">English</SelectItem>
-                      <SelectItem value="es">Spanish</SelectItem>
-                      <SelectItem value="fr">French</SelectItem>
-                      <SelectItem value="de">German</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="theme">Theme</Label>
-                  <Select
-                    value={systemPreferences.theme}
-                    onValueChange={(value) =>
-                      setSystemPreferences({ ...systemPreferences, theme: value })
-                    }
-                  >
-                    <SelectTrigger id="theme">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="light">Light</SelectItem>
-                      <SelectItem value="dark">Dark</SelectItem>
-                      <SelectItem value="auto">Auto</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <Button
-                  onClick={handleSavePreferences}
-                  className="w-full bg-gradient-to-r from-primary to-secondary"
-                >
-                  <Save className="mr-2 h-4 w-4" />
-                  Save System Preferences
+          {filteredDocuments.length === 0 ? (
+            <Card className="p-12 text-center">
+              <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+              <h3 className="text-lg font-semibold mb-2">No documents found</h3>
+              <p className="text-muted-foreground mb-4">
+                {searchQuery || selectedCategory !== "all"
+                  ? "Try adjusting your search"
+                  : "Upload your first document"}
+              </p>
+              {!searchQuery && selectedCategory === "all" && (
+                <Button onClick={triggerFileInput}>
+                  <Upload className="mr-2 h-4 w-4" />
+                  Upload
                 </Button>
-              </div>
+              )}
             </Card>
-          </TabsContent>
-        </Tabs>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {filteredDocuments.map((doc) => {
+                const FileIcon = getFileIcon(doc.type);
+                return (
+                  <Card
+                    key={doc.id}
+                    className="p-6 hover:shadow-lg transition-all hover:-translate-y-1"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`p-3 rounded-lg border ${getFileTypeColor(doc.type)}`}>
+                        <FileIcon className="h-6 w-6" />
+                      </div>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => handleDelete(doc.id)}
+                        className="text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    <h3 className="font-semibold mb-2 truncate" title={doc.name}>
+                      {doc.name}
+                    </h3>
+
+                    <div className="space-y-2 text-sm text-muted-foreground mb-4">
+                      <div className="flex justify-between">
+                        <span>Size:</span>
+                        <span className="font-medium">{formatFileSize(doc.size)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Uploaded:</span>
+                        <span className="font-medium">{format(doc.uploadedAt, "MMM d, yyyy")}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>By:</span>
+                        <span className="font-medium">{doc.uploadedBy}</span>
+                      </div>
+                    </div>
+
+                    <Badge variant="secondary" className="mb-4">{doc.category}</Badge>
+
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => handleDownload(doc)}
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Download
+                    </Button>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        <Card className="p-6 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold mb-1">Storage Used</h3>
+              <p className="text-sm text-muted-foreground">
+                {formatFileSize(documents.reduce((sum, doc) => sum + doc.size, 0))} of 10 GB
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-2xl font-bold text-primary">{documents.length}</p>
+              <p className="text-sm text-muted-foreground">Documents</p>
+            </div>
+          </div>
+        </Card>
       </div>
     </AdminLayout>
   );
