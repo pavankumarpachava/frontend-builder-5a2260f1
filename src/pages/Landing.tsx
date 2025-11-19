@@ -76,15 +76,27 @@ const Landing = () => {
         </div>
       </nav>
 
-      {/* Hero Section with Gradient Mesh Background */}
+      {/* Hero Section with Parallax */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Animated Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-mesh opacity-90"></div>
+        <div 
+          className="absolute inset-0 bg-gradient-mesh opacity-90 parallax-slow"
+          style={{
+            transform: 'translateZ(0)',
+            willChange: 'transform',
+          }}
+        ></div>
         <div className="absolute inset-0 bg-background/30 backdrop-blur-3xl"></div>
         
-        {/* Floating Orbs */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        {/* Floating Orbs with Parallax */}
+        <div 
+          className="absolute top-20 left-10 w-72 h-72 bg-primary/30 rounded-full blur-3xl animate-pulse parallax-fast"
+          style={{ willChange: 'transform' }}
+        ></div>
+        <div 
+          className="absolute bottom-20 right-10 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-pulse parallax-slow" 
+          style={{ animationDelay: '1s', willChange: 'transform' }}
+        ></div>
         
         <div className="container mx-auto px-6 py-20 relative z-10">
           <div className="max-w-5xl mx-auto text-center space-y-8 animate-fade-in">
