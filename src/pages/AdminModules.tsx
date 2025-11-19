@@ -13,8 +13,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Plus, Edit, Trash2, FileText, Video, Link as LinkIcon, Download } from "lucide-react";
+import { Plus, Edit, Trash2, FileText, Video, Link as LinkIcon, Download, UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { AssignmentModal } from "@/components/AssignmentModal";
 
 interface Module {
   id: string;
@@ -33,6 +34,8 @@ interface Resource {
 
 const AdminModules = () => {
   const { toast } = useToast();
+  const [assignmentModalOpen, setAssignmentModalOpen] = useState(false);
+  const [selectedModuleTitle, setSelectedModuleTitle] = useState("");
   
   const [modules, setModules] = useState<Module[]>([
     {
@@ -172,18 +175,31 @@ const AdminModules = () => {
                   <p className="text-sm text-muted-foreground">
                     {module.resources} resources attached
                   </p>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button size="sm" variant="outline">
-                        <Plus className="mr-2 h-3 w-3" />
-                        Add Resource
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="bg-white/95 backdrop-blur-lg">
-                      <DialogHeader>
-                        <DialogTitle>Add Resource to {module.title}</DialogTitle>
-                        <DialogDescription>Upload or link a learning resource</DialogDescription>
-                      </DialogHeader>
+                  <div className="flex gap-2">
+                    <Button 
+                      size="sm" 
+                      variant="default"
+                      className="bg-gradient-to-r from-primary to-accent"
+                      onClick={() => {
+                        setSelectedModuleTitle(module.title);
+                        setAssignmentModalOpen(true);
+                      }}
+                    >
+                      <UserPlus className="mr-2 h-3 w-3" />
+                      Assign
+                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button size="sm" variant="outline">
+                          <Plus className="mr-2 h-3 w-3" />
+                          Add Resource
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="bg-white/95 backdrop-blur-lg">
+                        <DialogHeader>
+                          <DialogTitle>Add Resource to {module.title}</DialogTitle>
+                          <DialogDescription>Upload or link a learning resource</DialogDescription>
+                        </DialogHeader>
                       <div className="space-y-4 py-4">
                         <div className="space-y-2">
                           <Label>Resource Type</Label>
@@ -214,8 +230,9 @@ const AdminModules = () => {
                           Add Resource
                         </Button>
                       </div>
-                    </DialogContent>
-                  </Dialog>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </div>
               </div>
             </Card>
@@ -256,6 +273,12 @@ const AdminModules = () => {
           </div>
         </Card>
       </div>
+      
+      <AssignmentModal
+        isOpen={assignmentModalOpen}
+        onClose={() => setAssignmentModalOpen(false)}
+        moduleTitle={selectedModuleTitle}
+      />
     </AdminLayout>
   );
 };

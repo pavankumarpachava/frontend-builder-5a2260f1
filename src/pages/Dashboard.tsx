@@ -100,7 +100,7 @@ const Dashboard = () => {
 
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
-          {/* Checklist - Netflix Style Cards */}
+          {/* Checklist - Netflix Style Carousel */}
           <Card className="lg:col-span-2 p-6 hover:shadow-lg transition-shadow">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-semibold">Your Onboarding Checklist</h2>
@@ -112,58 +112,60 @@ const Dashboard = () => {
                 View All
               </Button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {checklistItems.map((item, index) => (
-                <div
-                  key={index}
-                  className={`group relative overflow-hidden rounded-xl border-2 transition-all duration-300 cursor-pointer ${
-                    item.completed
-                      ? "bg-gradient-to-br from-green-500/10 to-emerald-500/5 border-green-500/30 opacity-75"
-                      : "bg-gradient-to-br from-primary/10 to-secondary/5 border-primary/20 hover:border-primary/50"
-                  } hover:scale-[1.12] hover:shadow-[0_0_25px_rgba(180,80,255,0.35)] hover:z-10`}
-                  style={{
-                    transformOrigin: 'center',
-                    transition: 'transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out, border-color 0.25s ease-in-out'
-                  }}
-                >
-                  {/* Status Icon - Top Left */}
-                  <div className="absolute top-3 left-3 z-10">
-                    {item.completed ? (
-                      <div className="bg-green-500 rounded-full p-1.5 shadow-lg">
-                        <CheckCircle className="h-5 w-5 text-white" />
-                      </div>
-                    ) : (
-                      <div className="bg-background/80 backdrop-blur-sm border-2 border-primary/40 rounded-full p-1.5 shadow-lg">
-                        <div className="h-5 w-5 rounded-full border-2 border-primary" />
+            <div className="relative">
+              <div className="flex gap-4 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory scrollbar-hide">
+                {checklistItems.map((item, index) => (
+                  <div
+                    key={index}
+                    className={`group relative flex-shrink-0 w-72 overflow-hidden rounded-xl border-2 transition-all duration-300 cursor-pointer snap-start ${
+                      item.completed
+                        ? "bg-gradient-to-br from-green-500/10 to-emerald-500/5 border-green-500/30 opacity-75"
+                        : "bg-gradient-to-br from-primary/10 to-secondary/5 border-primary/20 hover:border-primary/50"
+                    } hover:scale-[1.12] hover:shadow-[0_0_25px_rgba(180,80,255,0.35)] hover:z-10`}
+                    style={{
+                      transformOrigin: 'center',
+                      transition: 'transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out, border-color 0.25s ease-in-out'
+                    }}
+                  >
+                    {/* Status Icon - Top Left */}
+                    <div className="absolute top-3 left-3 z-10">
+                      {item.completed ? (
+                        <div className="bg-green-500 rounded-full p-1.5 shadow-lg">
+                          <CheckCircle className="h-5 w-5 text-white" />
+                        </div>
+                      ) : (
+                        <div className="bg-background/80 backdrop-blur-sm border-2 border-primary/40 rounded-full p-1.5 shadow-lg">
+                          <div className="h-5 w-5 rounded-full border-2 border-primary" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Completed Diagonal Slash */}
+                    {item.completed && (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="w-full h-1 bg-green-600/60 rotate-[-25deg] shadow-lg" />
                       </div>
                     )}
-                  </div>
 
-                  {/* Completed Diagonal Slash */}
-                  {item.completed && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="w-full h-1 bg-green-600/60 rotate-[-25deg] shadow-lg" />
+                    {/* Card Content */}
+                    <div className="p-6 pt-12 h-40">
+                      <h3 className={`text-lg font-semibold mb-2 transition-all group-hover:text-primary ${
+                        item.completed ? "text-muted-foreground" : "text-foreground"
+                      }`}>
+                        {item.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {item.completed ? "Completed ✓" : "In Progress"}
+                      </p>
                     </div>
-                  )}
 
-                  {/* Card Content */}
-                  <div className="p-6 pt-12">
-                    <h3 className={`text-lg font-semibold mb-2 transition-all group-hover:text-primary ${
-                      item.completed ? "text-muted-foreground" : "text-foreground"
-                    }`}>
-                      {item.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {item.completed ? "Completed ✓" : "In Progress"}
-                    </p>
+                    {/* Hover Glow Effect */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent" />
+                    </div>
                   </div>
-
-                  {/* Hover Glow Effect */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent" />
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </Card>
 
