@@ -45,6 +45,7 @@ import AdminMentors from "./pages/AdminMentors";
 import AdminAnalytics from "./pages/AdminAnalytics";
 import AdminSettings from "./pages/AdminSettings";
 import MentorDashboard from "./pages/MentorDashboard";
+import AdminProfile from "./pages/AdminProfile";
 
 const queryClient = new QueryClient();
 
@@ -106,6 +107,7 @@ const App = () => (
           <Route path="/admin/mentors" element={<ProtectedAdminRoute><AdminMentors /></ProtectedAdminRoute>} />
           <Route path="/admin/analytics" element={<ProtectedAdminRoute><AdminAnalytics /></ProtectedAdminRoute>} />
           <Route path="/admin/settings" element={<ProtectedAdminRoute><AdminSettings /></ProtectedAdminRoute>} />
+          <Route path="/admin/profile" element={<ProtectedAdminRoute><AdminProfile /></ProtectedAdminRoute>} />
           
           {/* Mentor Routes */}
           <Route path="/mentor/dashboard" element={<ProtectedAdminRoute><MentorDashboard /></ProtectedAdminRoute>} />
