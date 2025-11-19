@@ -6,10 +6,9 @@ import {
   Users,
   BookOpen,
   UserCog,
-  BarChart3,
   LogOut,
-  Settings,
   Rocket,
+  User,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -26,8 +25,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     { icon: Users, label: "User Management", path: "/admin/users" },
     { icon: BookOpen, label: "Modules & Resources", path: "/admin/modules" },
     { icon: UserCog, label: "Mentor Management", path: "/admin/mentors" },
-    { icon: BarChart3, label: "Analytics", path: "/admin/analytics" },
-    { icon: Settings, label: "Settings", path: "/admin/settings" },
   ];
 
   const handleLogout = () => {
@@ -82,9 +79,12 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             <Link to="/admin/profile">
               <Button
                 variant="ghost"
-                className="text-white hover:bg-white/10"
+                size="icon"
+                className={`text-white hover:bg-white/10 ${
+                  isActive("/admin/profile") ? "bg-white/20" : ""
+                }`}
               >
-                Profile
+                <User className="h-5 w-5" />
               </Button>
             </Link>
             <Button
