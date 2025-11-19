@@ -9,14 +9,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Rocket, Home, CheckCircle, Users, BookOpen, User, Settings, LogOut, Menu, X, Bell } from "lucide-react";
+import { Rocket, Home, CheckCircle, Users, BookOpen, User, Settings as SettingsIcon, LogOut, Menu, X, Bell, Shield } from "lucide-react";
 import { toast } from "sonner";
+import { AdminAuthModal } from "@/components/AdminAuthModal";
 
 export const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [adminAuthOpen, setAdminAuthOpen] = useState(false);
   const [user, setUser] = useState<any>(() => JSON.parse(localStorage.getItem("user") || "{}"));
+  const userRole = localStorage.getItem("userRole");
   
   // Listen for storage changes to update avatar in real-time
   useEffect(() => {
@@ -27,6 +30,11 @@ export const Header = () => {
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
+
+  // Show Admin Portal button only if:
+  // - User is not logged in, OR
+  // - User role is admin or mentor
+  const showAdminPortal = !user.email || userRole === "admin" || userRole === "mentor";
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -40,7 +48,7 @@ export const Header = () => {
     { href: "/notifications", label: "Notifications", icon: Bell },
     { href: "/profile", label: "Profile", icon: User },
     { href: "/documents", label: "Documents", icon: BookOpen },
-    { href: "/settings", label: "Settings", icon: Settings },
+    { href: "/settings", label: "Settings", icon: SettingsIcon },
   ];
 
   const onboardingLinks = [
@@ -159,13 +167,15 @@ export const Header = () => {
           </div>
 
           {/* Admin Portal Link */}
-          <Link
-            to="/admin/login"
-            className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-white/10 transition-colors"
-          >
-            <Settings className="h-4 w-4" />
-            Admin
-          </Link>
+          {showAdminPortal && (
+            <button
+              onClick={() => setAdminAuthOpen(true)}
+              className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-white/10 transition-colors"
+            >
+              <Shield className="h-4 w-4" />
+              Admin Portal
+            </button>
+          )}
         </nav>
 
         {/* User Avatar Dropdown */}
@@ -312,16 +322,20 @@ export const Header = () => {
             </div>
 
             {/* Admin Portal Link */}
-            <div>
-              <Link
-                to="/admin/login"
-                className="flex items-center gap-2 font-semibold text-white py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Settings className="h-4 w-4" />
-                Admin Portal
-              </Link>
-            </div>
+            {showAdminPortal && (
+              <div>
+                <button
+                  onClick={() => {
+                    setAdminAuthOpen(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex items-center gap-2 font-semibold text-white py-2"
+                >
+                  <Shield className="h-4 w-4" />
+                  Admin Portal
+                </button>
+              </div>
+            )}
 
             {/* User Actions */}
             {user.email && (
@@ -368,6 +382,9 @@ export const Header = () => {
           </div>
         </div>
       )}
+
+      {/* Admin Auth Modal */}
+      <AdminAuthModal open={adminAuthOpen} onOpenChange={setAdminAuthOpen} />
     </header>
   );
 };
