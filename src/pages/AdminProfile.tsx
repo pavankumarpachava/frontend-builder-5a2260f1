@@ -132,6 +132,12 @@ const AdminProfile = () => {
       localStorage.setItem("user", JSON.stringify(updatedUser));
     }
     
+    // Trigger storage event so Header updates immediately
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'userAvatar',
+      newValue: croppedImageUrl
+    }));
+    
     setIsCropModalOpen(false);
     toast.success("Profile picture updated successfully");
   };

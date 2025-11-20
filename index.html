@@ -4,9 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Performance Optimizations -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <!-- Critical Performance Optimizations -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://api.dicebear.com" />
+    
+    <!-- Preload critical resources -->
+    <link rel="modulepreload" href="/src/main.tsx" />
+    
+    <!-- Critical inline CSS for LCP optimization -->
+    <style>
+      body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+      .page-transition { animation: fadeIn 0.2s ease-in; }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      .min-h-screen { min-height: 100vh; }
+      .flex { display: flex; }
+      .flex-col { flex-direction: column; }
+      #root { min-height: 100vh; }
+    </style>
     
     <title>OnboardX - Smart Employee Onboarding Platform</title>
     <meta name="description" content="Transform your employee onboarding with AI-powered guidance, smart checklists, and personalized workflows. Get new hires productive faster." />
@@ -25,8 +41,5 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    
-    <!-- Preload critical resources -->
-    <link rel="modulepreload" href="/src/main.tsx" />
   </body>
 </html>

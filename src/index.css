@@ -256,6 +256,16 @@ All colors MUST be HSL.
   perspective: 1000px;
 }
 
+/* Reduce repaints */
+.hover-scale {
+  will-change: transform;
+}
+
+/* Optimize cards */
+.glass-card {
+  contain: layout style paint;
+}
+
 /* Lazy Load Optimization */
 img[loading="lazy"] {
   content-visibility: auto;
@@ -266,6 +276,17 @@ img[loading="lazy"] {
   transform: translateZ(0);
   backface-visibility: hidden;
   perspective: 1000px;
+}
+
+/* Optimize font rendering */
+body {
+  font-display: swap;
+  text-rendering: optimizeLegibility;
+}
+
+/* Reduce layout shifts */
+.container {
+  contain: layout;
 }
 
 /* Lazy loading optimization */

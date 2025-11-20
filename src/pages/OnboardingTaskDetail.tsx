@@ -91,6 +91,13 @@ const OnboardingTaskDetail = () => {
     return null;
   }
 
+  // Check if this task is already completed
+  const isTaskCompleted = () => {
+    const saved = localStorage.getItem("completedOnboardingTasks");
+    const completedTasks = saved ? new Set(JSON.parse(saved)) : new Set();
+    return completedTasks.has(task.id);
+  };
+
   const IconComponent = task.icon;
   const progress = (completedSteps.size / task.steps.length) * 100;
   const allStepsComplete = completedSteps.size === task.steps.length;
@@ -117,6 +124,18 @@ const OnboardingTaskDetail = () => {
     }
 
     setIsFinishing(true);
+    
+    // Save task completion to localStorage
+    const saved = localStorage.getItem("completedOnboardingTasks");
+    const completedTasks = saved ? new Set(JSON.parse(saved)) : new Set();
+    completedTasks.add(task.id);
+    localStorage.setItem("completedOnboardingTasks", JSON.stringify([...completedTasks]));
+    
+    // Trigger storage event for Dashboard to update
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'completedOnboardingTasks',
+      newValue: JSON.stringify([...completedTasks])
+    }));
     
     // Trigger confetti animation
     const duration = 3000;

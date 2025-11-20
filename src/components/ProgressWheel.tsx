@@ -20,8 +20,8 @@ export const ProgressWheel = ({
   const offset = circumference - (displayPercentage / 100) * circumference;
 
   useEffect(() => {
-    const timer = setTimeout(() => setDisplayPercentage(percentage), 50);
-    return () => clearTimeout(timer);
+    // Immediate update for better LCP
+    setDisplayPercentage(percentage);
   }, [percentage]);
 
   return (
