@@ -15,17 +15,27 @@ import { motion } from "framer-motion";
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
   const navigate = useNavigate();
-  const [completedTasks, setCompletedTasks] = useState<Set<number>>(new Set());
+  const [completedTasks, setCompletedTasks] = useState<Set<number>>(() => {
+    // Load completed tasks from localStorage on mount
+    const saved = localStorage.getItem("completedOnboardingTasks");
+    return saved ? new Set(JSON.parse(saved)) : new Set();
+  });
   const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     loadUser();
-    const handleStorageChange = () => {
+    const handleStorageChange = (e: StorageEvent) => {
       const updatedUserData = localStorage.getItem("user");
       if (updatedUserData) setUser(JSON.parse(updatedUserData));
+      
+      // Listen for task completion changes
+      if (e.key === "completedOnboardingTasks") {
+        const saved = localStorage.getItem("completedOnboardingTasks");
+        setCompletedTasks(saved ? new Set(JSON.parse(saved)) : new Set());
+      }
     };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener('storage', handleStorageChange as any);
+    return () => window.removeEventListener('storage', handleStorageChange as any);
   }, []);
 
   const loadUser = async () => {
@@ -53,20 +63,6 @@ const Dashboard = () => {
   ];
 
   const progress = (completedTasks.size / checklistItems.length) * 100;
-
-  const toggleTask = (id: number) => {
-    setCompletedTasks(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#667eea', '#764ba2', '#f093fb'] });
-        toast.success("Nice job! Task completed ✅");
-      }
-      return newSet;
-    });
-  };
 
   const scrollCarousel = (direction: 'left' | 'right') => {
     if (carouselRef.current) {
@@ -108,7 +104,7 @@ const Dashboard = () => {
                 {checklistItems.map((item, index) => {
                   const isCompleted = completedTasks.has(item.id);
                   return (
-                    <motion.div key={item.id} className="flex-none w-80 snap-center" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
+                    <motion.div key={item.id} className="flex-none w-80 snap-center" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05, duration: 0.2 }}>
                       <Card className={`h-full cursor-pointer transition-all duration-300 ease-in-out border-2 transform-gpu ${isCompleted ? 'bg-muted/50 border-muted opacity-60' : 'glass-card border-white/20 hover:scale-[1.12] hover:shadow-2xl hover:shadow-primary/35 hover:border-primary/50 hover:z-10'}`} onClick={() => navigate(`/onboarding/task/${item.id}`)} style={{ transformOrigin: 'center', willChange: 'transform' }}>
                         <CardContent className="p-6">
                           <div className="flex items-start justify-between mb-4">
