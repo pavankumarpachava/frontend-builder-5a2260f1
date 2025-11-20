@@ -20,22 +20,20 @@ export const ProgressWheel = ({
   const offset = circumference - (displayPercentage / 100) * circumference;
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDisplayPercentage(percentage);
-    }, 100);
+    const timer = setTimeout(() => setDisplayPercentage(percentage), 50);
     return () => clearTimeout(timer);
   }, [percentage]);
 
   return (
     <div className={cn("relative inline-flex items-center justify-center", className)}>
-      {/* 3D Shadow Base */}
+      {/* 3D Shadow Base - optimized */}
       <div 
-        className="absolute rounded-full blur-xl opacity-40"
+        className="absolute rounded-full blur-xl opacity-30"
         style={{
-          width: size,
-          height: size,
+          width: size * 0.9,
+          height: size * 0.9,
           background: 'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)))',
-          transform: 'translateY(8px)',
+          transform: 'translateY(6px)',
         }}
       />
       
@@ -44,9 +42,6 @@ export const ProgressWheel = ({
         width={size}
         height={size}
         className="relative transform-gpu"
-        style={{
-          filter: 'drop-shadow(0 4px 12px rgba(102, 126, 234, 0.3))',
-        }}
       >
         {/* Background Circle */}
         <circle

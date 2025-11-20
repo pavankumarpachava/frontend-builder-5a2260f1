@@ -3,6 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Performance Optimizations -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    
     <title>OnboardX - Smart Employee Onboarding Platform</title>
     <meta name="description" content="Transform your employee onboarding with AI-powered guidance, smart checklists, and personalized workflows. Get new hires productive faster." />
     <meta name="author" content="OnboardX" />
@@ -20,5 +25,8 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Preload critical resources -->
+    <link rel="modulepreload" href="/src/main.tsx" />
   </body>
 </html>

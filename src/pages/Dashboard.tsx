@@ -109,7 +109,7 @@ const Dashboard = () => {
                   const isCompleted = completedTasks.has(item.id);
                   return (
                     <motion.div key={item.id} className="flex-none w-80 snap-center" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
-                      <Card className={`h-full cursor-pointer transition-all duration-[250ms] ease-in-out border-2 transform-gpu ${isCompleted ? 'bg-muted/50 border-muted opacity-60' : 'glass-card border-white/20 hover:scale-[1.12] hover:shadow-2xl hover:shadow-primary/35 hover:border-primary/50 hover:z-10'}`} onClick={() => toggleTask(item.id)} style={{ transformOrigin: 'center', willChange: 'transform' }}>
+                      <Card className={`h-full cursor-pointer transition-all duration-[250ms] ease-in-out border-2 transform-gpu ${isCompleted ? 'bg-muted/50 border-muted opacity-60' : 'glass-card border-white/20 hover:scale-[1.12] hover:shadow-2xl hover:shadow-primary/35 hover:border-primary/50 hover:z-10'}`} onClick={() => navigate(`/onboarding/task/${item.id}`)} style={{ transformOrigin: 'center', willChange: 'transform' }}>
                         <CardContent className="p-6">
                           <div className="flex items-start justify-between mb-4">
                             <div className={`h-12 w-12 rounded-lg flex items-center justify-center ${isCompleted ? 'bg-primary/20' : 'bg-gradient-to-br from-primary to-accent'}`}>

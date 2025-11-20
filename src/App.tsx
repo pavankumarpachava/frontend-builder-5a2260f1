@@ -46,6 +46,7 @@ import AdminAnalytics from "./pages/AdminAnalytics";
 import AdminSettings from "./pages/AdminSettings";
 import MentorDashboard from "./pages/MentorDashboard";
 import AdminProfile from "./pages/AdminProfile";
+import OnboardingTaskDetail from "./pages/OnboardingTaskDetail";
 
 const queryClient = new QueryClient();
 
@@ -83,6 +84,7 @@ const App = () => (
           
           {/* Onboarding Group */}
           <Route path="/onboarding/checklist" element={<ChecklistView />} />
+          <Route path="/onboarding/task/:taskId" element={<OnboardingTaskDetail />} />
           <Route path="/onboarding/goals" element={<Goals />} />
           <Route path="/onboarding/calendar" element={<CalendarView />} />
           <Route path="/onboarding/team" element={<TeamDirectory />} />
