@@ -14,73 +14,69 @@ import { ImageCropModal } from "@/components/ImageCropModal";
 import { Badge } from "@/components/ui/badge";
 import { 
   User, Mail, Building2, Edit, Camera, Upload, Trash2, Shield,
-  Save, Workflow, BookOpen, Settings as SettingsIcon, Bell, CheckCheck,
-  FileText, Download as DownloadIcon, Search, File, FileSpreadsheet, FileImage,
-  FileVideo, FileAudio, BarChart3, TrendingUp, TrendingDown
+  Save, FileText, Download as DownloadIcon, Search, File, FileSpreadsheet, FileImage,
+  FileVideo, FileAudio, Bell, CheckCheck
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import {
-  LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
-} from "recharts";
 
-28: const AdminProfile = () => {
-29:   const navigate = useNavigate();
-30: 
-31:   type Document = {
-32:     id: string;
-33:     name: string;
-34:     type: string;
-35:     size: number;
-36:     uploadedAt: Date;
-37:     uploadedBy: string;
-38:     category: string;
-39:   };
-40: 
-41:   const [user, setUser] = useState<any | null>(null);
-42:   const [isLoading, setIsLoading] = useState(true);
-43:   const [isEditing, setIsEditing] = useState(false);
-44:   const [avatarUrl, setAvatarUrl] = useState<string>("");
-45:   const [isCropModalOpen, setIsCropModalOpen] = useState(false);
-46:   const [selectedImage, setSelectedImage] = useState<string>("");
-47:   const avatarFileInputRef = useRef<HTMLInputElement>(null);
-48:   const documentsFileInputRef = useRef<HTMLInputElement>(null);
-49: 
-50:   const [documents, setDocuments] = useState<Document[]>([
-51:     {
-52:       id: "1",
-53:       name: "Employee Handbook.pdf",
-54:       type: "application/pdf",
-55:       size: 2048000,
-56:       uploadedAt: new Date("2024-01-15"),
-57:       uploadedBy: "Admin",
-58:       category: "Policies",
-59:     },
-60:     {
-61:       id: "2",
-62:       name: "Welcome Guide.docx",
-63:       type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-64:       size: 1024000,
-65:       uploadedAt: new Date("2024-01-20"),
-66:       uploadedBy: "Admin",
-67:       category: "Onboarding",
-68:     },
-69:     {
-70:       id: "3",
-71:       name: "Company Values.pdf",
-72:       type: "application/pdf",
-73:       size: 512000,
-74:       uploadedAt: new Date("2024-02-01"),
-75:       uploadedBy: "HR Manager",
-76:       category: "Culture",
-77:     },
-78:   ]);
-79:   const [searchQuery, setSearchQuery] = useState("");
-80:   const [selectedCategory, setSelectedCategory] = useState("all");
-81:   const categories = ["all", "Policies", "Onboarding", "Culture", "Training", "Other"];
-82:   const [emailNotificationsEnabled, setEmailNotificationsEnabled] = useState(true);
-83:   const [systemAlertsEnabled, setSystemAlertsEnabled] = useState(true);
+type Document = {
+  id: string;
+  name: string;
+  type: string;
+  size: number;
+  uploadedAt: Date;
+  uploadedBy: string;
+  category: string;
+};
+
+const AdminProfile = () => {
+  const navigate = useNavigate();
+
+  const [user, setUser] = useState<any | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
+  const [isCropModalOpen, setIsCropModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string>("");
+  const avatarFileInputRef = useRef<HTMLInputElement>(null);
+  const documentsFileInputRef = useRef<HTMLInputElement>(null);
+
+  const [documents, setDocuments] = useState<Document[]>([
+    {
+      id: "1",
+      name: "Employee Handbook.pdf",
+      type: "application/pdf",
+      size: 2048000,
+      uploadedAt: new Date("2024-01-15"),
+      uploadedBy: "Admin",
+      category: "Policies",
+    },
+    {
+      id: "2",
+      name: "Welcome Guide.docx",
+      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      size: 1024000,
+      uploadedAt: new Date("2024-01-20"),
+      uploadedBy: "Admin",
+      category: "Onboarding",
+    },
+    {
+      id: "3",
+      name: "Company Values.pdf",
+      type: "application/pdf",
+      size: 512000,
+      uploadedAt: new Date("2024-02-01"),
+      uploadedBy: "HR Manager",
+      category: "Culture",
+    },
+  ]);
+  
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const categories = ["all", "Policies", "Onboarding", "Culture", "Training", "Other"];
+  const [emailNotificationsEnabled, setEmailNotificationsEnabled] = useState(true);
+  const [systemAlertsEnabled, setSystemAlertsEnabled] = useState(true);
 
   useEffect(() => {
     const userRole = localStorage.getItem("userRole");
@@ -103,90 +99,70 @@ import {
       setUser(parsedUser);
       setAvatarUrl(
         parsedUser.avatar ||
-          `https://api.dicebear.com/7.x/avataaars/svg?seed=${parsedUser.email}`
-      );
-    } else {
-      const userEmail = localStorage.getItem("userEmail") || "";
-      const defaultUser = {
-        id: userEmail || "admin",
-        name: "",
-        email: userEmail,
-        department: "Administration",
-        avatar: null,
-      };
-      setUser(defaultUser);
-      setAvatarUrl(
-        `https://api.dicebear.com/7.x/avataaars/svg?seed=${userEmail || "admin"}`
+        `https://api.dicebear.com/7.x/initials/svg?seed=${parsedUser.name}`
       );
     }
     setIsLoading(false);
   };
 
-  const handleSave = () => {
-    localStorage.setItem("user", JSON.stringify(user));
-    setIsEditing(false);
-    toast.success("Profile updated successfully");
-  };
-
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         toast.error("Image size should be less than 5MB");
         return;
       }
-      
+
       const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        setSelectedImage(result);
+      reader.onload = (e) => {
+        setSelectedImage(e.target?.result as string);
         setIsCropModalOpen(true);
       };
       reader.readAsDataURL(file);
     }
-    if (event.target) {
-      event.target.value = '';
+  };
+
+  const handleCropComplete = (croppedImageUrl: string) => {
+    setAvatarUrl(croppedImageUrl);
+    localStorage.setItem("userAvatar", croppedImageUrl);
+    
+    if (user) {
+      const updatedUser = { ...user, avatar: croppedImageUrl };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
     }
+    
+    setIsCropModalOpen(false);
+    toast.success("Profile picture updated successfully");
   };
 
-  const handleCropComplete = (croppedImage: string) => {
-    setAvatarUrl(croppedImage);
-    const updatedUser = { ...user, avatar: croppedImage };
-    setUser(updatedUser);
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-    const userId = user.id || user.email;
-    localStorage.setItem(`profileImage_admin_${userId}`, croppedImage);
-    localStorage.setItem("userAvatar", croppedImage);
-    window.dispatchEvent(new Event('storage'));
-    window.dispatchEvent(new StorageEvent('storage', {
-      key: 'userAvatar',
-      newValue: croppedImage,
-    }));
-    toast.success("Profile picture updated successfully!");
-  };
-
-  const handleRemoveImage = () => {
-    const defaultEmail = user?.email || "admin";
-    const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${defaultEmail}`;
+  const handleRemoveAvatar = () => {
+    const defaultAvatar = `https://api.dicebear.com/7.x/initials/svg?seed=${user?.name || "User"}`;
     setAvatarUrl(defaultAvatar);
-    const updatedUser = { ...user, avatar: null };
-    setUser(updatedUser);
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-    window.dispatchEvent(new Event("storage"));
+    localStorage.removeItem("userAvatar");
+    
+    if (user) {
+      const updatedUser = { ...user, avatar: defaultAvatar };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    }
+    
     toast.success("Profile picture removed");
+  };
+
+  const handleSave = () => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+      toast.success("Profile updated successfully");
+      setIsEditing(false);
+    }
   };
 
   const handleDocumentUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
-      const newDocuments: Document[] = [];
       Array.from(files).forEach((file) => {
-        if (file.size > 50 * 1024 * 1024) {
-          toast.error(`${file.name} is too large. Max 50MB`);
-          return;
-        }
-
-        const newDoc: Document = {
+        const newDocument: Document = {
           id: Date.now().toString() + Math.random(),
           name: file.name,
           type: file.type,
@@ -195,190 +171,195 @@ import {
           uploadedBy: user?.name || "Admin",
           category: "Other",
         };
-        newDocuments.push(newDoc);
+        setDocuments((prev) => [...prev, newDocument]);
       });
-
-      if (newDocuments.length > 0) {
-        setDocuments((prev) => [...newDocuments, ...prev]);
-        toast.success(`${newDocuments.length} document(s) uploaded`);
-      }
-    }
-
-    if (event.target) {
-      event.target.value = "";
+      toast.success(`${files.length} document(s) uploaded successfully`);
     }
   };
 
-  const handleDocumentDelete = (id: string) => {
+  const handleDeleteDocument = (id: string) => {
     setDocuments((prev) => prev.filter((doc) => doc.id !== id));
-    toast.success("Document deleted");
+    toast.success("Document deleted successfully");
   };
 
-  const handleDocumentDownload = (doc: Document) => {
-    toast.success(`Downloading ${doc.name}`);
-  };
-
-  const triggerFileInput = () => {
-    avatarFileInputRef.current?.click();
-  };
-
-  const triggerDocumentsFileInput = () => {
-    documentsFileInputRef.current?.click();
-  };
-
-  const formatFileSize = (bytes: number): string => {
-    if (bytes < 1024) return bytes + " B";
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
   };
 
   const getFileIcon = (type: string) => {
-    if (type.includes("pdf")) return FileText;
-    if (type.includes("spreadsheet") || type.includes("excel")) return FileSpreadsheet;
-    if (type.includes("image")) return FileImage;
-    if (type.includes("video")) return FileVideo;
-    if (type.includes("audio")) return FileAudio;
-    return File;
+    if (type.includes("pdf")) return <FileText className="h-8 w-8 text-red-500" />;
+    if (type.includes("spreadsheet") || type.includes("excel")) return <FileSpreadsheet className="h-8 w-8 text-green-500" />;
+    if (type.includes("image")) return <FileImage className="h-8 w-8 text-blue-500" />;
+    if (type.includes("video")) return <FileVideo className="h-8 w-8 text-purple-500" />;
+    if (type.includes("audio")) return <FileAudio className="h-8 w-8 text-orange-500" />;
+    return <File className="h-8 w-8 text-muted-foreground" />;
   };
 
   const filteredDocuments = documents.filter((doc) => {
     const matchesSearch = doc.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || doc.category === selectedCategory;
+    const matchesCategory = selectedCategory === "all" || doc.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
-  if (isLoading || !user) {
-    return null;
+
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-96">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </AdminLayout>
+    );
   }
- 
-  const userRole = localStorage.getItem("userRole");
 
   return (
     <AdminLayout>
-      <div className="p-8 space-y-8">
-        <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <Shield className="h-8 w-8 text-primary" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Profile &amp; Settings
-            </h1>
-          </div>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Profile</h1>
           <p className="text-muted-foreground">
-            Manage your admin profile, documents, and account settings
+            Manage your profile, documents, and settings
           </p>
         </div>
 
-        <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList>
+        <Tabs defaultValue="profile" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="documents">Documents</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="profile">
-            <Card className="p-8">
-              <div className="flex flex-col items-center mb-8">
-                <div className="relative group">
-                  <Avatar className="h-32 w-32 border-4 border-primary/20 shadow-lg">
-                    <AvatarImage src={avatarUrl} alt={user.name} />
-                    <AvatarFallback className="text-3xl bg-gradient-to-br from-primary to-secondary text-white">
-                      {user.name?.charAt(0) || user.email?.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+          <TabsContent value="profile" className="space-y-6">
+            <Card className="p-6">
+              <div className="space-y-6">
+                <div className="flex items-start gap-6">
+                  <div className="relative">
+                    <Avatar className="h-24 w-24">
+                      <AvatarImage src={avatarUrl} alt={user?.name} />
+                      <AvatarFallback>
+                        <User className="h-12 w-12" />
+                      </AvatarFallback>
+                    </Avatar>
                     <Button
                       size="icon"
-                      variant="ghost"
-                      className="h-10 w-10 text-white hover:bg-white/20"
-                      onClick={triggerFileInput}
+                      variant="secondary"
+                      className="absolute bottom-0 right-0 h-8 w-8 rounded-full"
+                      onClick={() => avatarFileInputRef.current?.click()}
                     >
-                      <Camera className="h-5 w-5" />
+                      <Camera className="h-4 w-4" />
                     </Button>
-                    {user.avatar && (
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-10 w-10 text-white hover:bg-white/20"
-                        onClick={handleRemoveImage}
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-                <input
-                  ref={avatarFileInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageUpload}
-                />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="mt-4"
-                  onClick={triggerFileInput}
-                >
-                  <Upload className="mr-2 h-4 w-4" />
-                  Upload Photo
-                </Button>
-                <p className="text-xs text-muted-foreground mt-2">
-                  JPG, PNG or GIF. Max 5MB
-                </p>
-              </div>
-
-              <div className="space-y-6">
-                <div className="grid gap-6 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input
-                      id="name"
-                      value={user.name || ""}
-                      onChange={(e) => setUser({ ...user, name: e.target.value })}
-                      disabled={!isEditing}
+                    <input
+                      ref={avatarFileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageSelect}
                     />
                   </div>
-                  <div className="space-y-2">
+
+                  <div className="flex-1 space-y-4">
+                    <div>
+                      <h3 className="text-xl font-semibold">{user?.name}</h3>
+                      <p className="text-sm text-muted-foreground">{user?.email}</p>
+                      <Badge variant="secondary" className="mt-2">
+                        {user?.role || "Admin"}
+                      </Badge>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => avatarFileInputRef.current?.click()}
+                      >
+                        <Upload className="h-4 w-4 mr-2" />
+                        Change Photo
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleRemoveAvatar}
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Remove
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="name">Full Name</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        id="name"
+                        value={user?.name || ""}
+                        onChange={(e) => setUser({ ...user, name: e.target.value })}
+                        disabled={!isEditing}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-2">
                     <Label htmlFor="email">Email</Label>
                     <Input
                       id="email"
                       type="email"
-                      value={user.email || ""}
+                      value={user?.email || ""}
                       onChange={(e) => setUser({ ...user, email: e.target.value })}
                       disabled={!isEditing}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="role">Role</Label>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="phone">Phone</Label>
                     <Input
-                      id="role"
-                      value={userRole === "admin" ? "Administrator" : "Mentor"}
-                      disabled
-                      className="bg-primary/5 font-semibold text-primary"
+                      id="phone"
+                      type="tel"
+                      value={user?.phone || ""}
+                      onChange={(e) => setUser({ ...user, phone: e.target.value })}
+                      disabled={!isEditing}
+                      placeholder="+1 (555) 000-0000"
                     />
                   </div>
-                  <div className="space-y-2">
+
+                  <div className="grid gap-2">
                     <Label htmlFor="department">Department</Label>
                     <Input
                       id="department"
-                      value={user.department || "Administration"}
-                      onChange={(e) =>
-                        setUser({ ...user, department: e.target.value })
-                      }
+                      value={user?.department || ""}
+                      onChange={(e) => setUser({ ...user, department: e.target.value })}
                       disabled={!isEditing}
+                      placeholder="Human Resources"
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="bio">Bio</Label>
+                    <Textarea
+                      id="bio"
+                      value={user?.bio || ""}
+                      onChange={(e) => setUser({ ...user, bio: e.target.value })}
+                      disabled={!isEditing}
+                      placeholder="Tell us about yourself..."
+                      rows={4}
                     />
                   </div>
                 </div>
 
-                <div className="flex gap-4 pt-4">
+                <div className="flex gap-2">
                   {!isEditing ? (
-                    <Button onClick={() => setIsEditing(true)} className="flex-1">
-                      <Edit className="mr-2 h-4 w-4" />
+                    <Button onClick={() => setIsEditing(true)}>
+                      <Edit className="h-4 w-4 mr-2" />
                       Edit Profile
                     </Button>
                   ) : (
                     <>
-                      <Button onClick={handleSave} className="flex-1">
+                      <Button onClick={handleSave}>
+                        <Save className="h-4 w-4 mr-2" />
                         Save Changes
                       </Button>
                       <Button
@@ -387,7 +368,6 @@ import {
                           setIsEditing(false);
                           loadUser();
                         }}
-                        className="flex-1"
                       >
                         Cancel
                       </Button>
@@ -398,214 +378,165 @@ import {
             </Card>
           </TabsContent>
 
-          <TabsContent value="documents">
-            <div className="space-y-6">
-              <Card className="p-6 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
-                <div className="flex flex-col md:flex-row items-center gap-4">
-                  <div className="flex-1">
-                    <h3 className="font-semibold mb-2 flex items-center gap-2">
-                      <Upload className="h-5 w-5 text-primary" />
-                      Upload Documents
-                    </h3>
+          <TabsContent value="documents" className="space-y-6">
+            <Card className="p-6">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold">Document Management</h3>
                     <p className="text-sm text-muted-foreground">
-                      All file types supported (Max 50MB)
+                      Upload and manage your documents
                     </p>
                   </div>
-                  <Button
-                    onClick={triggerDocumentsFileInput}
-                    className="bg-gradient-to-r from-primary to-secondary"
-                  >
-                    <Upload className="mr-2 h-4 w-4" />
-                    Choose Files
+                  <Button onClick={() => documentsFileInputRef.current?.click()}>
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Documents
                   </Button>
                   <input
                     ref={documentsFileInputRef}
                     type="file"
                     multiple
-                    accept="*/*"
                     className="hidden"
                     onChange={handleDocumentUpload}
                   />
                 </div>
-              </Card>
 
-              <Card className="p-6">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex-1 relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search documents..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10"
-                    />
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search documents..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-9"
+                      />
+                    </div>
                   </div>
-                  <div className="flex gap-2 flex-wrap">
-                    {categories.map((category) => (
-                      <Button
-                        key={category}
-                        variant={
-                          selectedCategory === category ? "default" : "outline"
-                        }
-                        size="sm"
-                        onClick={() => setSelectedCategory(category)}
-                      >
-                        {category.charAt(0).toUpperCase() + category.slice(1)}
-                      </Button>
-                    ))}
-                  </div>
+                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category.charAt(0).toUpperCase() + category.slice(1)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-              </Card>
 
-              <div className="space-y-4">
-                <h2 className="text-2xl font-semibold">
-                  Documents ({filteredDocuments.length})
-                </h2>
-
-                {filteredDocuments.length === 0 ? (
-                  <Card className="p-12 text-center">
-                    <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <h3 className="text-lg font-semibold mb-2">
-                      No documents found
-                    </h3>
-                    <p className="text-muted-foreground mb-4">
-                      {searchQuery || selectedCategory !== "all"
-                        ? "Try adjusting your search"
-                        : "Upload your first document"}
-                    </p>
-                    {!searchQuery && selectedCategory === "all" && (
-                      <Button onClick={triggerDocumentsFileInput}>
-                        <Upload className="mr-2 h-4 w-4" />
-                        Upload
-                      </Button>
-                    )}
-                  </Card>
-                ) : (
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {filteredDocuments.map((doc) => {
-                      const Icon = getFileIcon(doc.type);
-                      return (
-                        <Card
-                          key={doc.id}
-                          className="p-4 flex flex-col justify-between"
-                        >
-                          <div className="flex items-start gap-3">
-                            <div className="p-2 rounded-md bg-primary/10 text-primary">
-                              <Icon className="h-5 w-5" />
-                            </div>
-                            <div className="space-y-1 flex-1">
-                              <div className="flex items-center justify-between gap-2">
-                                <h3 className="font-semibold truncate">
-                                  {doc.name}
-                                </h3>
-                                <Badge variant="outline">{doc.category}</Badge>
-                              </div>
-                              <p className="text-xs text-muted-foreground">
-                                {formatFileSize(doc.size)} • Uploaded by {doc.uploadedBy}
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                {format(doc.uploadedAt, "PPP")}
-                              </p>
+                <div className="space-y-4">
+                  {filteredDocuments.length === 0 ? (
+                    <div className="text-center py-12">
+                      <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                      <p className="text-muted-foreground">No documents found</p>
+                    </div>
+                  ) : (
+                    filteredDocuments.map((doc) => (
+                      <div
+                        key={doc.id}
+                        className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+                      >
+                        <div className="flex items-center gap-4">
+                          {getFileIcon(doc.type)}
+                          <div>
+                            <p className="font-medium">{doc.name}</p>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <span>{formatFileSize(doc.size)}</span>
+                              <span>•</span>
+                              <span>{format(doc.uploadedAt, "MMM dd, yyyy")}</span>
+                              <span>•</span>
+                              <Badge variant="outline" className="text-xs">
+                                {doc.category}
+                              </Badge>
                             </div>
                           </div>
-                          <div className="mt-4 flex justify-end gap-2">
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              onClick={() => handleDocumentDownload(doc)}
-                            >
-                              <DownloadIcon className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="destructive"
-                              size="icon"
-                              onClick={() => handleDocumentDelete(doc.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button variant="ghost" size="icon">
+                            <DownloadIcon className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDeleteDocument(doc.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
-            </div>
+            </Card>
           </TabsContent>
 
-          <TabsContent value="settings">
-            <div className="grid gap-6 md:grid-cols-2">
-              <Card className="p-6 space-y-4">
+          <TabsContent value="settings" className="space-y-6">
+            <Card className="p-6">
+              <div className="space-y-6">
                 <div>
-                  <h2 className="text-xl font-semibold flex items-center gap-2">
-                    <SettingsIcon className="h-5 w-5 text-primary" />
-                    Notification Settings
-                  </h2>
+                  <h3 className="text-lg font-semibold">Notification Settings</h3>
                   <p className="text-sm text-muted-foreground">
-                    Control how you receive updates about activity in the
-                    platform.
+                    Manage how you receive notifications
                   </p>
                 </div>
+
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">Email notifications</p>
-                      <p className="text-xs text-muted-foreground">
-                        Receive important updates in your inbox.
+                    <div className="space-y-0.5">
+                      <Label htmlFor="email-notifications">Email Notifications</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Receive notifications via email
                       </p>
                     </div>
                     <Switch
+                      id="email-notifications"
                       checked={emailNotificationsEnabled}
                       onCheckedChange={setEmailNotificationsEnabled}
                     />
                   </div>
+
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">System alerts</p>
-                      <p className="text-xs text-muted-foreground">
-                        Show in-app alerts for critical events.
+                    <div className="space-y-0.5">
+                      <Label htmlFor="system-alerts">System Alerts</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Receive important system alerts
                       </p>
                     </div>
                     <Switch
+                      id="system-alerts"
                       checked={systemAlertsEnabled}
                       onCheckedChange={setSystemAlertsEnabled}
                     />
                   </div>
                 </div>
-              </Card>
+              </div>
+            </Card>
 
-              <Card className="p-6 space-y-4">
+            <Card className="p-6">
+              <div className="space-y-6">
                 <div>
-                  <h2 className="text-xl font-semibold flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-primary" />
-                    Account Security
-                  </h2>
+                  <h3 className="text-lg font-semibold">Account Security</h3>
                   <p className="text-sm text-muted-foreground">
-                    Review and update your security preferences.
+                    Manage your account security settings
                   </p>
                 </div>
+
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">Two-factor authentication</p>
-                      <p className="text-xs text-muted-foreground">
-                        Add an extra layer of security to your account.
-                      </p>
-                    </div>
-                    <Badge variant="outline">Coming soon</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">Login activity</p>
-                      <p className="text-xs text-muted-foreground">
-                        Monitor recent sign-ins to your account.
-                      </p>
-                    </div>
-                    <Badge variant="outline">Coming soon</Badge>
-                  </div>
+                  <Button variant="outline" className="w-full justify-start">
+                    <Shield className="h-4 w-4 mr-2" />
+                    Change Password
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start">
+                    <CheckCheck className="h-4 w-4 mr-2" />
+                    Enable Two-Factor Authentication
+                  </Button>
                 </div>
-              </Card>
-            </div>
+              </div>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
